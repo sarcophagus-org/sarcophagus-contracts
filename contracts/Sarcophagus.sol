@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.12 <0.7.0;
+pragma solidity ^0.6.0;
+
+import "./math/SafeMath.sol";
+import "./token/ERC20/IERC20.sol";
 
 contract Sarcophagus {
+    using SafeMath for uint256;
+
+    event Creation(address sarcophagusContract);
+
     event RegisterArchaeologist(
         bytes publicKey,
         address paymentAddress,
@@ -25,7 +32,7 @@ contract Sarcophagus {
     struct Archaeologist {
         bool exists;
         bytes publicKey;
-        address payable paymentAddress;
+        address paymentAddress;
         uint256 minimumBounty;
         uint256 minimumDiggingFee;
         uint256 maximumResurrectionTime;
@@ -33,16 +40,13 @@ contract Sarcophagus {
         uint256 cursedBond;
     }
 
+    IERC20 public sarcoToken;
     mapping(address => Archaeologist) public archaeologists;
     address[] public archaeologistAddresses;
 
-    function addArchaeologist(address user, Archaeologist memory arch)
-        private
-        returns (bool)
-    {
-        archaeologists[user] = arch;
-        archaeologistAddresses.push(user);
-        return true;
+    constructor(address _sarcoToken) public {
+        sarcoToken = IERC20(_sarcoToken);
+        emit Creation(_sarcoToken);
     }
 
     function archaeologistCount() public view returns (uint256) {
@@ -51,11 +55,12 @@ contract Sarcophagus {
 
     function register(
         bytes memory publicKey,
-        address payable paymentAddress,
+        address paymentAddress,
         uint256 minimumBounty,
         uint256 minimumDiggingFee,
-        uint256 maximumResurrectionTime
-    ) public payable returns (bool) {
+        uint256 maximumResurrectionTime,
+        uint256 freeBond
+    ) public returns (bool) {
         require(
             archaeologists[msg.sender].exists == false,
             "archaeologist already registered"
@@ -69,6 +74,8 @@ contract Sarcophagus {
             "transaction address must have been derived from public key input"
         );
 
+        sarcoToken.transferFrom(msg.sender, address(this), freeBond);
+
         Archaeologist memory newArch = Archaeologist(
             true,
             publicKey,
@@ -76,11 +83,12 @@ contract Sarcophagus {
             minimumBounty,
             minimumDiggingFee,
             maximumResurrectionTime,
-            msg.value,
+            freeBond,
             0
         );
 
-        addArchaeologist(msg.sender, newArch);
+        archaeologists[msg.sender] = newArch;
+        archaeologistAddresses.push(msg.sender);
 
         emit RegisterArchaeologist(
             newArch.publicKey,
@@ -103,19 +111,22 @@ contract Sarcophagus {
     }
 
     function update(
-        address payable paymentAddress,
+        address paymentAddress,
         uint256 minimumBounty,
         uint256 minimumDiggingFee,
-        uint256 maximumResurrectionTime
-    ) public payable exists returns (bool) {
+        uint256 maximumResurrectionTime,
+        uint256 freeBond
+    ) public exists returns (bool) {
         Archaeologist storage arch = archaeologists[msg.sender];
-        require(arch.freeBond + msg.value >= arch.freeBond, "free bond overflow!");
-
         arch.paymentAddress = paymentAddress;
         arch.minimumBounty = minimumBounty;
         arch.minimumDiggingFee = minimumDiggingFee;
         arch.maximumResurrectionTime = maximumResurrectionTime;
-        arch.freeBond += msg.value;
+        arch.freeBond = arch.freeBond.add(freeBond);
+
+        if (freeBond > 0) {
+            sarcoToken.transferFrom(msg.sender, address(this), freeBond);
+        }
 
         emit UpdateArchaeologist(
             arch.publicKey,
@@ -123,7 +134,7 @@ contract Sarcophagus {
             arch.minimumBounty,
             arch.minimumDiggingFee,
             arch.maximumResurrectionTime,
-            msg.value
+            freeBond
         );
 
         return true;
@@ -131,13 +142,12 @@ contract Sarcophagus {
 
     function withdrawalBond(uint256 amount) public exists returns (bool) {
         Archaeologist storage arch = archaeologists[msg.sender];
-        require(
-            arch.freeBond >= amount,
+
+        arch.freeBond = arch.freeBond.sub(
+            amount,
             "requested withdrawal amount is greater than free bond"
         );
-
-        arch.paymentAddress.transfer(amount);
-        arch.freeBond -= amount;
+        sarcoToken.transfer(arch.paymentAddress, amount);
 
         emit WithdrawalFreeBond(arch.publicKey, amount);
 
