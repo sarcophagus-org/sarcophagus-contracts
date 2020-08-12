@@ -1,18 +1,18 @@
-import { expect, use } from 'chai';
-import { Contract, utils, ethers } from 'ethers';
-import { deployContract, MockProvider, solidity } from 'ethereum-waffle';
-import Sarcophagus from '../build/Sarcophagus.json';
+import { expect, use } from 'chai'
+import { Contract } from 'ethers'
+import { deployContract, MockProvider, solidity } from 'ethereum-waffle'
+import Sarcophagus from '../build/Sarcophagus.json'
 import { pubKey } from './helpers'
 
-use(solidity);
+use(solidity)
 
 describe('Sarcophagus', () => {
   const provider = new MockProvider()
-  const [wallet, wallet2] = provider.getWallets();
+  const [wallet, wallet2] = provider.getWallets()
   let sarco: Contract
 
   beforeEach(async () => {
-    sarco = await deployContract(wallet, Sarcophagus);
+    sarco = await deployContract(wallet, Sarcophagus)
   })
 
   describe("registers an archaeologist", () => {
@@ -163,11 +163,10 @@ describe('Sarcophagus', () => {
 
     describe("returns archaeologist public keys", () => {
       it("spits back the bytes of an archaeologist key given an index", async () => {
-        const key = pubKey(wallet)
-        await sarco.register(key, wallet.address, 0, 0, 0)
+        await sarco.register(pubKey(wallet), wallet.address, 0, 0, 0)
         const archLength = await sarco.archaeologistCount()
-        const returnedKey = await sarco.archaeologistKeys(archLength - 1)
-        expect(returnedKey).is.equal(utils.hexlify(key))
+        const returnedAddress = await sarco.archaeologistAddresses(archLength - 1)
+        expect(returnedAddress).is.equal(wallet.address)
       })
     })
 
@@ -178,18 +177,17 @@ describe('Sarcophagus', () => {
       const bond = 4
       const paymentAddress = wallet2.address
 
-      let archLength: number, keyFromContract: Buffer, arch: any, key: Buffer
+      let archLength: number, addressFromContract: string, arch: any
 
       beforeEach(async () => {
-        key = await pubKey(wallet)
-        await sarco.register(key, paymentAddress, minBounty, minDiggingFee, maxResurrectionTime, { value: bond })
+        await sarco.register(pubKey(wallet), paymentAddress, minBounty, minDiggingFee, maxResurrectionTime, { value: bond })
         archLength = await sarco.archaeologistCount()
-        keyFromContract = await sarco.archaeologistKeys(archLength - 1)
-        arch = await sarco.archaeologists(keyFromContract)
+        addressFromContract = await sarco.archaeologistAddresses(archLength - 1)
+        arch = await sarco.archaeologists(addressFromContract)
       })
 
       it("returns the correct public key", () => {
-        expect(keyFromContract).to.equal(utils.hexlify(key))
+        expect(addressFromContract).to.equal(wallet.address)
       })
 
       it("returns the correct payment address", () => {
@@ -209,13 +207,12 @@ describe('Sarcophagus', () => {
       })
 
       it("returns the correct bond", () => {
-        expect(arch.bond).to.equal(bond)
+        expect(arch.freeBond).to.equal(bond)
       })
     })
 
     describe("accumulates the contract value as archaeologists post their bond", () => {
       it("starts out with a zero balance", async () => {
-        sarco = sarco.attach(sarco.address)
         const balance = await provider.getBalance(sarco.address)
         expect(balance).to.equal(0)
       })
