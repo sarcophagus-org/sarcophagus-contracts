@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "waffle",
+    "build": "rimraf ./build && waffle",
+    "develop": "npm-run-all -p ganache \"deploy -- --no-wait\"",
+    "deploy": "ts-node ./deploy",
+    "ganache": "dotenv npm run ganache:repeatable",
+    "ganache:repeatable": "ganache-cli --port \"$DEVELOPMENT_BLOCKCHAIN_PORT\" --mnemonic \"$DEVELOPMENT_SEED_PHRASE\"",
     "test": "export NODE_ENV=test && mocha \"test/**/*.test.{js,ts}\" -r ts-node/register/transpile-only"
   },
   "author": "Adam Gall <adam@decentlabs.io>",
@@ -14,9 +18,14 @@
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.1",
     "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "dotenv-cli": "^3.2.0",
     "ethereum-waffle": "^3.0.2",
     "ethers": "^5.0.8",
+    "ganache-cli": "^6.10.1",
     "mocha": "^8.1.1",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   }

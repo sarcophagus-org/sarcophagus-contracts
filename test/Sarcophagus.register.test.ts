@@ -1,19 +1,19 @@
-import { expect, use } from 'chai'
-import { Contract, ethers } from 'ethers'
-import { deployContract, MockProvider, solidity } from 'ethereum-waffle'
-import Token from '../build/SarcophagusToken.json'
-import Sarcophagus from '../build/Sarcophagus.json'
-import { pubKey } from './helpers'
+import { expect, use } from "chai"
+import { Contract, BigNumber } from "ethers"
+import { deployContract, MockProvider, solidity } from "ethereum-waffle"
+import Token from "../build/SarcophagusToken.json"
+import Sarcophagus from "../build/Sarcophagus.json"
+import { pubKey } from "./helpers"
 
 use(solidity)
 
-describe('Sarcophagus', () => {
+describe("Sarcophagus", () => {
   const provider = new MockProvider()
   const [wallet, wallet2] = provider.getWallets()
   let sarco: Contract, token: Contract
 
   beforeEach(async () => {
-    token = await deployContract(wallet, Token, [ethers.BigNumber.from(100).pow(18), "Sarcophagus Token", "SARCO"])
+    token = await deployContract(wallet, Token, [BigNumber.from(100).pow(18), "Sarcophagus Token", "SARCO"])
     sarco = await deployContract(wallet, Sarcophagus, [token.address])
   })
 
