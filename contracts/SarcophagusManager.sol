@@ -67,6 +67,13 @@ contract SarcophagusManager {
         bytes singleHash
     );
 
+    event AccuseArchaeologist(
+        bytes32 assetDoubleHash,
+        address accuser,
+        uint256 accuserBondReward,
+        uint256 embalmerBondReward
+    );
+
     struct Archaeologist {
         bool exists;
         bytes publicKey;
@@ -104,7 +111,9 @@ contract SarcophagusManager {
 
     mapping(address => Archaeologist) public archaeologists;
     address[] public archaeologistAddresses;
+    mapping(address => bytes32[]) public archaeologistSuccesses;
     mapping(address => bytes32[]) public archaeologistCancels;
+    mapping(address => bytes32[]) public archaeologistAccusals;
 
     mapping(bytes32 => Sarcophagus) public sarcophaguses;
     mapping(bytes32 => SarcophagusMoney) public sarcophagusMonies;
@@ -377,8 +386,9 @@ contract SarcophagusManager {
         sarc.assetId = assetId;
 
         Archaeologist memory arch = archaeologists[archAddress];
-        SarcophagusMoney memory sarcMoney = sarcophagusMonies[assetDoubleHash];
+        SarcophagusMoney storage sarcMoney = sarcophagusMonies[assetDoubleHash];
         sarcoToken.transfer(arch.paymentAddress, sarcMoney.storageFee);
+        sarcMoney.storageFee = 0;
 
         emit UpdateSarcophagus(assetDoubleHash, assetId);
 
@@ -402,7 +412,7 @@ contract SarcophagusManager {
         );
 
         address archAddress = addressFromPublicKey(sarc.archaeologist);
-        Archaeologist memory arch = archaeologists[archAddress];
+        Archaeologist storage arch = archaeologists[archAddress];
         SarcophagusMoney memory sarcMoney = sarcophagusMonies[assetDoubleHash];
 
         sarcoToken.transfer(
@@ -411,7 +421,17 @@ contract SarcophagusManager {
         );
         sarcoToken.transfer(arch.paymentAddress, sarcMoney.diggingFee);
 
+        arch.cursedBond = arch.cursedBond.sub(sarcMoney.currentCursedBond);
+        arch.freeBond = arch.freeBond.add(sarcMoney.currentCursedBond);
+
+        sarcMoney.bounty = 0;
+        sarcMoney.storageFee = 0;
+        sarcMoney.currentCursedBond = 0;
+        sarcMoney.diggingFee = 0;
+
         archaeologistCancels[archAddress].push(assetDoubleHash);
+
+        // TODO: update cursed bond calculation ? maybe
 
         emit CancelSarcophagus(assetDoubleHash);
 
@@ -427,16 +447,8 @@ contract SarcophagusManager {
         Sarcophagus storage sarc = sarcophaguses[assetDoubleHash];
 
         require(
-            sarc.state != SarcophagusStates.DoesNotExist,
-            "sarcophagus does not exist"
-        );
-        require(
-            sarc.state != SarcophagusStates.Resurrected,
-            "sarcophagus has already been resurrected"
-        );
-        require(
-            sarc.state != SarcophagusStates.Buried,
-            "sarcophagus has already been buried"
+            sarc.state == SarcophagusStates.Exists,
+            "sarcophagus does not exist or is not active"
         );
         require(sarc.embalmer == msg.sender, "not your sarcophagus to rewrap");
         require(
@@ -514,16 +526,8 @@ contract SarcophagusManager {
         Sarcophagus storage sarc = sarcophaguses[assetDoubleHash];
 
         require(
-            sarc.state != SarcophagusStates.DoesNotExist,
-            "sarcophagus does not exist"
-        );
-        require(
-            sarc.state != SarcophagusStates.Resurrected,
-            "sarcophagus has already been resurrected"
-        );
-        require(
-            sarc.state != SarcophagusStates.Buried,
-            "sarcophagus has already been buried"
+            sarc.state == SarcophagusStates.Exists,
+            "sarcophagus does not exist or is not active"
         );
         require(
             sarc.resurrectionTime < block.timestamp,
@@ -551,11 +555,72 @@ contract SarcophagusManager {
         arch.freeBond = arch.freeBond.add(sarcMoney.currentCursedBond);
         arch.cursedBond = arch.cursedBond.sub(sarcMoney.currentCursedBond);
 
+        sarcMoney.diggingFee = 0;
+        sarcMoney.bounty = 0;
+        sarcMoney.currentCursedBond = 0;
+
         sarc.state = SarcophagusStates.Resurrected;
+
+        archaeologistSuccesses[archAddress].push(assetDoubleHash);
 
         // TODO: update cursed bond calculation
 
         emit UnwrapSarcophagus(sarc.assetId, assetDoubleHash, singleHash);
+
+        return true;
+    }
+
+    function accuseArchaeologist(
+        bytes32 assetDoubleHash,
+        bytes memory singleHash,
+        address paymentAddress
+    ) public returns (bool) {
+        Sarcophagus storage sarc = sarcophaguses[assetDoubleHash];
+
+        require(
+            sarc.state == SarcophagusStates.Exists,
+            "sarcophagus does not exist or is not active"
+        );
+        require(
+            sarc.resurrectionTime > block.timestamp,
+            "cannot accuse unless resurrection time is in the future"
+        );
+        require(
+            assetDoubleHash == keccak256(singleHash),
+            "input hash does not match sarcophagus hash"
+        );
+
+        SarcophagusMoney storage sarcMoney = sarcophagusMonies[assetDoubleHash];
+
+        uint256 halfToEmbalmer = sarcMoney.currentCursedBond.div(2);
+        uint256 halfToAccuser = sarcMoney.currentCursedBond.sub(halfToEmbalmer);
+        sarcoToken.transfer(
+            sarc.embalmer,
+            sarcMoney.bounty.add(sarcMoney.diggingFee).add(halfToEmbalmer)
+        );
+        sarcoToken.transfer(paymentAddress, halfToAccuser);
+
+        address archAddress = addressFromPublicKey(sarc.archaeologist);
+        Archaeologist storage arch = archaeologists[archAddress];
+        arch.freeBond = arch.freeBond.add(sarcMoney.currentCursedBond);
+        arch.cursedBond = arch.cursedBond.sub(sarcMoney.currentCursedBond);
+
+        sarcMoney.diggingFee = 0;
+        sarcMoney.bounty = 0;
+        sarcMoney.currentCursedBond = 0;
+
+        sarc.state = SarcophagusStates.Resurrected;
+
+        archaeologistAccusals[archAddress].push(assetDoubleHash);
+
+        // TODO: update cursed bond calculation
+
+        emit AccuseArchaeologist(
+            assetDoubleHash,
+            msg.sender,
+            halfToAccuser,
+            halfToEmbalmer
+        );
 
         return true;
     }
