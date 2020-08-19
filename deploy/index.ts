@@ -1,7 +1,7 @@
 import { Contract, providers, BigNumber, Signer, Wallet } from "ethers"
 import { deployContract } from "ethereum-waffle"
 import Token from "../build/SarcophagusToken.json"
-import Sarcophagus from "../build/Sarcophagus.json"
+import SarcophagusManager from "../build/SarcophagusManager.json"
 
 require("dotenv").config()
 
@@ -27,7 +27,7 @@ const deployWithSigner = async (environment: string, signer: Signer) => {
   const token: Contract = await deployContract(signer, Token, [supply, name, symbol])
   logContractData(environment, name, token)
 
-  const sarco: Contract = await deployContract(signer, Sarcophagus, [token.address])
+  const sarco: Contract = await deployContract(signer, SarcophagusManager, [token.address])
   logContractData(environment, "Sarcophagus", sarco)
 }
 
