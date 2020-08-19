@@ -23,33 +23,33 @@ describe("Sarcophagus Manager", () => {
         it("very short", async () => {
           const smallest = Buffer.from("00", "hex")
           expect(smallest).to.have.lengthOf(1)
-          await expect(sarco.callStatic.registerArchaeologist(smallest, wallet2.address, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
+          await expect(sarco.callStatic.registerArchaeologist(smallest, "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
         })
 
         it("slightly short", async () => {
           const smaller = pubKey(wallet).subarray(0, pubKey(wallet).length - 1)
           expect(smaller).to.have.lengthOf(63)
-          await expect(sarco.callStatic.registerArchaeologist(smaller, wallet2.address, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
+          await expect(sarco.callStatic.registerArchaeologist(smaller, "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
         })
 
         it("slightly long", async () => {
           const bigger = Buffer.concat([pubKey(wallet), Buffer.from("00", "hex")])
           expect(bigger).to.have.lengthOf(65)
-          await expect(sarco.callStatic.registerArchaeologist(bigger, wallet2.address, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
+          await expect(sarco.callStatic.registerArchaeologist(bigger, "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
         })
 
         it("very long", async () => {
           const biggest = Buffer.concat([pubKey(wallet), pubKey(wallet)])
           expect(biggest).to.have.lengthOf(128)
-          await expect(sarco.callStatic.registerArchaeologist(biggest, wallet2.address, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
+          await expect(sarco.callStatic.registerArchaeologist(biggest, "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)).to.be.revertedWith("public key must be 64 bytes")
         })
       })
 
       describe("and should succeed with a correct public key length", () => {
         it("just right", async () => {
-          const register = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
+          const register = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
           expect(register).to.equal(true)
-          await sarco.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
+          await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
           const count = await sarco.archaeologistCount()
           expect(count).to.equal(1)
         })
@@ -59,12 +59,12 @@ describe("Sarcophagus Manager", () => {
     describe("requires the archaeologist transaction initiator and public key match", () => {
       it("fails when the public key does not derive the transaction's msg.sender", async () => {
         sarco = sarco.connect(wallet)
-        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet2), wallet.address, 0, 0, 0, 0)).to.be.revertedWith("transaction address must have been derived from public key input")
+        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet2), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)).to.be.revertedWith("transaction address must have been derived from public key input")
       })
 
       it("succeeds when the public key derives the transaction's msg.sender", async () => {
         sarco = sarco.connect(wallet)
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
         const count = await sarco.archaeologistCount()
         expect(count).to.equal(1)
       })
@@ -72,78 +72,78 @@ describe("Sarcophagus Manager", () => {
 
     describe("requires a minimum bounty value", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
         expect(ret).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 1, 0, 0, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 1, 0, 0, 0)
         expect(ret).to.be.true
       })
     })
 
     describe("requires a minimum digging fee", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
         expect(ret).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 1, 0, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 1, 0, 0)
         expect(ret).to.be.true
       })
     })
 
     describe("requires a maximum resurrection time", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
         expect(ret).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 1, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 1, 0)
         expect(ret).to.be.true
       })
     })
 
     describe("requires a bond", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
         expect(ret).to.be.true
       })
 
       it("should succeed wit4h a non-zero value", async () => {
         await token.approve(sarco.address, 1)
-        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 1)
+        const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 1)
         expect(ret).to.be.true
       })
     })
 
     describe("does not allow same key to register twice", () => {
       it("with with same payment address", async () => {
-        await sarco.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
-        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)).to.be.revertedWith("archaeologist already registered")
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
+        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)).to.be.revertedWith("archaeologist already registered")
       })
 
       it("with different payment addresses", async () => {
-        await sarco.registerArchaeologist(pubKey(wallet), wallet2.address, 0, 0, 0, 0)
-        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, 0)).to.be.revertedWith("archaeologist already registered")
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
+        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)).to.be.revertedWith("archaeologist already registered")
       })
     })
 
     describe("allows different keys to register", () => {
       it("with same payment address", async () => {
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
         sarco = sarco.connect(wallet2)
-        await sarco.registerArchaeologist(pubKey(wallet2), wallet.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet2), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
         const count = await sarco.archaeologistCount()
         expect(count).to.equal(2)
       })
 
       it("with different payment addresss", async () => {
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
         sarco = sarco.connect(wallet2)
-        await sarco.registerArchaeologist(pubKey(wallet2), wallet2.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet2), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
         const count = await sarco.archaeologistCount()
         expect(count).to.equal(2)
       })
@@ -156,9 +156,9 @@ describe("Sarcophagus Manager", () => {
       })
 
       it("when there are multiple", async () => {
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
         sarco = sarco.connect(wallet2)
-        await sarco.registerArchaeologist(pubKey(wallet2), wallet2.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet2), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
         const count = await sarco.archaeologistCount()
         expect(count).to.equal(2)
       })
@@ -166,7 +166,7 @@ describe("Sarcophagus Manager", () => {
 
     describe("returns archaeologist public keys", () => {
       it("spits back the bytes of an archaeologist key given an index", async () => {
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
         const archLength = await sarco.archaeologistCount()
         const returnedAddress = await sarco.archaeologistAddresses(archLength - 1)
         expect(returnedAddress).is.equal(wallet.address)
@@ -184,7 +184,7 @@ describe("Sarcophagus Manager", () => {
 
       beforeEach(async () => {
         await token.approve(sarco.address, bond)
-        await sarco.registerArchaeologist(pubKey(wallet), paymentAddress, minBounty, minDiggingFee, maxResurrectionTime, bond)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", paymentAddress, 0, minBounty, minDiggingFee, maxResurrectionTime, bond)
         archLength = await sarco.archaeologistCount()
         addressFromContract = await sarco.archaeologistAddresses(archLength - 1)
         arch = await sarco.archaeologists(addressFromContract)
@@ -225,7 +225,7 @@ describe("Sarcophagus Manager", () => {
         const ogBalance = await token.balanceOf(sarco.address)
         const bond = 1
         await token.approve(sarco.address, bond)
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, bond)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, bond)
         const newBalance = await token.balanceOf(sarco.address)
         expect(newBalance).to.equal(ogBalance.add(bond))
       })
@@ -236,11 +236,11 @@ describe("Sarcophagus Manager", () => {
         const bond2 = 2
         await token.transfer(wallet2.address, 2)
         await token.approve(sarco.address, bond1)
-        await sarco.registerArchaeologist(pubKey(wallet), wallet.address, 0, 0, 0, bond1)
+        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, bond1)
         token = token.connect(wallet2)
         sarco = sarco.connect(wallet2)
         await token.approve(sarco.address, bond2)
-        await sarco.registerArchaeologist(pubKey(wallet2), wallet2.address, 0, 0, 0, bond2)
+        await sarco.registerArchaeologist(pubKey(wallet2), "https://test.com/post", wallet2.address, 0, 0, 0, 0, bond2)
         const newBalance = await token.balanceOf(sarco.address)
         expect(newBalance.sub(ogBalance)).to.equal(bond1 + bond2)
       })

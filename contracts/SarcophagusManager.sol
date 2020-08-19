@@ -11,7 +11,9 @@ contract SarcophagusManager {
 
     event RegisterArchaeologist(
         bytes publicKey,
+        string endpoint,
         address paymentAddress,
+        uint256 feePerByte,
         uint256 minimumBounty,
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
@@ -20,7 +22,9 @@ contract SarcophagusManager {
 
     event UpdateArchaeologist(
         bytes publicKey,
+        string endpoint,
         address paymentAddress,
+        uint256 feePerByte,
         uint256 minimumBounty,
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
@@ -56,7 +60,9 @@ contract SarcophagusManager {
     struct Archaeologist {
         bool exists;
         bytes publicKey;
+        string endpoint;
         address paymentAddress;
+        uint256 feePerByte;
         uint256 minimumBounty;
         uint256 minimumDiggingFee;
         uint256 maximumResurrectionTime;
@@ -116,7 +122,9 @@ contract SarcophagusManager {
 
     function registerArchaeologist(
         bytes memory publicKey,
+        string memory endpoint,
         address paymentAddress,
+        uint256 feePerByte,
         uint256 minimumBounty,
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
@@ -140,7 +148,9 @@ contract SarcophagusManager {
         Archaeologist memory newArch = Archaeologist(
             true,
             publicKey,
+            endpoint,
             paymentAddress,
+            feePerByte,
             minimumBounty,
             minimumDiggingFee,
             maximumResurrectionTime,
@@ -153,7 +163,9 @@ contract SarcophagusManager {
 
         emit RegisterArchaeologist(
             newArch.publicKey,
+            newArch.endpoint,
             newArch.paymentAddress,
+            newArch.feePerByte,
             newArch.minimumBounty,
             newArch.minimumDiggingFee,
             newArch.maximumResurrectionTime,
@@ -164,14 +176,18 @@ contract SarcophagusManager {
     }
 
     function updateArchaeologist(
+        string memory endpoint,
         address paymentAddress,
+        uint256 feePerByte,
         uint256 minimumBounty,
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
         uint256 freeBond
     ) public archaeologistExists returns (bool) {
         Archaeologist storage arch = archaeologists[msg.sender];
+        arch.endpoint = endpoint;
         arch.paymentAddress = paymentAddress;
+        arch.feePerByte = feePerByte;
         arch.minimumBounty = minimumBounty;
         arch.minimumDiggingFee = minimumDiggingFee;
         arch.maximumResurrectionTime = maximumResurrectionTime;
@@ -183,7 +199,9 @@ contract SarcophagusManager {
 
         emit UpdateArchaeologist(
             arch.publicKey,
+            arch.endpoint,
             arch.paymentAddress,
+            arch.feePerByte,
             arch.minimumBounty,
             arch.minimumDiggingFee,
             arch.maximumResurrectionTime,
