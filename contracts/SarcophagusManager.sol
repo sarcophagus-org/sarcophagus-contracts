@@ -74,6 +74,15 @@ contract SarcophagusManager {
         uint256 embalmerBondReward
     );
 
+    event BurySarcophagus(bytes32 assetDoubleHash);
+
+    event CleanUpSarcophagus(
+        bytes32 assetDoubleHash,
+        address cleaner,
+        uint256 cleanerBondReward,
+        uint256 embalmerBondReward
+    );
+
     struct Archaeologist {
         bool exists;
         bytes publicKey;
@@ -114,8 +123,10 @@ contract SarcophagusManager {
     mapping(address => bytes32[]) public archaeologistSuccesses;
     mapping(address => bytes32[]) public archaeologistCancels;
     mapping(address => bytes32[]) public archaeologistAccusals;
+    mapping(address => bytes32[]) public archaeologistCleanups;
 
     mapping(bytes32 => Sarcophagus) public sarcophaguses;
+    bytes32[] public sarcophagusDoubleHashes;
     mapping(bytes32 => SarcophagusMoney) public sarcophagusMonies;
 
     uint16 minimumResurrectionWindow = 30 minutes;
@@ -135,6 +146,10 @@ contract SarcophagusManager {
 
     function archaeologistCount() public view returns (uint256) {
         return archaeologistAddresses.length;
+    }
+
+    function sarcophagusCount() public view returns (uint256) {
+        return sarcophagusDoubleHashes.length;
     }
 
     function addressFromPublicKey(bytes memory publicKey)
@@ -327,6 +342,7 @@ contract SarcophagusManager {
         });
 
         sarcophaguses[assetDoubleHash] = sarcophagus;
+        sarcophagusDoubleHashes.push(assetDoubleHash);
         sarcophagusMonies[assetDoubleHash] = sarcophagusMoney;
 
         emit CreateSarcophagus(
@@ -357,7 +373,7 @@ contract SarcophagusManager {
 
         require(
             sarc.state == SarcophagusStates.Exists,
-            "sarcophagus does not exist"
+            "sarcophagus does not exist or is not active"
         );
         require(
             sarc.embalmer == msg.sender,
@@ -400,7 +416,7 @@ contract SarcophagusManager {
 
         require(
             sarc.state == SarcophagusStates.Exists,
-            "sarcophagus does not exist"
+            "sarcophagus does not exist or is not active"
         );
         require(
             bytes(sarc.assetId).length == 0,
@@ -602,7 +618,6 @@ contract SarcophagusManager {
 
         address archAddress = addressFromPublicKey(sarc.archaeologist);
         Archaeologist storage arch = archaeologists[archAddress];
-        arch.freeBond = arch.freeBond.add(sarcMoney.currentCursedBond);
         arch.cursedBond = arch.cursedBond.sub(sarcMoney.currentCursedBond);
 
         sarcMoney.diggingFee = 0;
@@ -619,6 +634,94 @@ contract SarcophagusManager {
             assetDoubleHash,
             msg.sender,
             halfToAccuser,
+            halfToEmbalmer
+        );
+
+        return true;
+    }
+
+    function burySarcophagus(bytes32 assetDoubleHash) public returns (bool) {
+        Sarcophagus storage sarc = sarcophaguses[assetDoubleHash];
+
+        require(
+            sarc.state == SarcophagusStates.Exists,
+            "sarcophagus does not exist or is not active"
+        );
+        require(
+            sarc.embalmer == msg.sender,
+            "sarcophagus can only be updated by embalmer"
+        );
+        require(
+            sarc.resurrectionTime > block.timestamp,
+            "cannot bury unless resurrection time is in the future"
+        );
+
+        address archAddress = addressFromPublicKey(sarc.archaeologist);
+        Archaeologist storage arch = archaeologists[archAddress];
+        SarcophagusMoney storage sarcMoney = sarcophagusMonies[assetDoubleHash];
+
+        arch.freeBond = arch.freeBond.add(sarcMoney.currentCursedBond);
+        arch.cursedBond = arch.cursedBond.sub(sarcMoney.currentCursedBond);
+
+        sarcoToken.transfer(arch.paymentAddress, sarcMoney.diggingFee);
+        sarcMoney.diggingFee = 0;
+        sarcMoney.bounty = 0;
+        sarcMoney.currentCursedBond = 0;
+
+        sarc.resurrectionTime = 2**256 - 1;
+        sarc.state = SarcophagusStates.Buried;
+
+        // TODO: calculate new bond multiplier ? maybe
+
+        emit BurySarcophagus(assetDoubleHash);
+
+        return true;
+    }
+
+    function cleanUpSarcophagus(bytes32 assetDoubleHash, address paymentAddress)
+        public
+        returns (bool)
+    {
+        Sarcophagus storage sarc = sarcophaguses[assetDoubleHash];
+
+        require(
+            sarc.state == SarcophagusStates.Exists,
+            "sarcophagus does not exist or is not active"
+        );
+        require(
+            sarc.resurrectionTime.add(sarc.resurrectionWindow) <
+                block.timestamp,
+            "sarcophagus resurrection period must be in the past"
+        );
+
+        SarcophagusMoney storage sarcMoney = sarcophagusMonies[assetDoubleHash];
+
+        uint256 halfToEmbalmer = sarcMoney.currentCursedBond.div(2);
+        uint256 halfToCleaner = sarcMoney.currentCursedBond.sub(halfToEmbalmer);
+        sarcoToken.transfer(
+            sarc.embalmer,
+            sarcMoney.bounty.add(sarcMoney.diggingFee).add(halfToEmbalmer)
+        );
+        sarcoToken.transfer(paymentAddress, halfToCleaner);
+
+        address archAddress = addressFromPublicKey(sarc.archaeologist);
+        Archaeologist storage arch = archaeologists[archAddress];
+        arch.cursedBond = arch.cursedBond.sub(sarcMoney.currentCursedBond);
+
+        sarcMoney.bounty = 0;
+        sarcMoney.currentCursedBond = 0;
+        sarcMoney.diggingFee = 0;
+
+        sarc.state = SarcophagusStates.Resurrected;
+
+        archaeologistCleanups[archAddress].push(assetDoubleHash);
+
+        // TODO: calculate new bond multiplier
+
+        emit CleanUpSarcophagus(
+            assetDoubleHash,
+            msg.sender,
+            halfToCleaner,
             halfToEmbalmer
         );
 
