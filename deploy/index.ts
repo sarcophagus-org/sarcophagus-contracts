@@ -1,7 +1,8 @@
 import { Contract, providers, BigNumber, Signer, Wallet } from "ethers"
 import { deployContract } from "ethereum-waffle"
 import Token from "../build/SarcophagusToken.json"
-import SarcophagusManager from "../build/SarcophagusManager.json"
+import Sarcophagus from "../build/Sarcophagus.json"
+import { linkLibraries } from "./linkLibraries"
 
 require("dotenv").config()
 
@@ -27,7 +28,8 @@ const deployWithSigner = async (environment: string, signer: Signer) => {
   const token: Contract = await deployContract(signer, Token, [supply, name, symbol])
   logContractData(environment, name, token)
 
-  const sarco: Contract = await deployContract(signer, SarcophagusManager, [token.address])
+  await linkLibraries(signer, logContractData, environment)
+  const sarco: Contract = await deployContract(signer, Sarcophagus, [token.address])
   logContractData(environment, "Sarcophagus", sarco)
 }
 
@@ -44,14 +46,14 @@ const ticker = (environment: string, timeout: number, signer: Signer) => {
   return new Promise(resolve => {
     const tick = setInterval(async () => {
       process.stdout.write(`${timeout}... `);
-  
+
       timeout--
       if (timeout >= 0) return
-      
+
       console.log("")
       console.log("")
       clearInterval(tick)
-  
+
       await deployWithSigner(environment, signer)
       resolve()
     }, 1000)
@@ -81,28 +83,29 @@ const deploy = async (args?: string[]) => {
       deployed = true
       await publicDeploy("goerli", process.env.GOERLI_DEPLOYMENT_PRIVATE_KEY, timeout)
     }
-  
+
     if (args?.includes("--ropsten")) {
       deployed = true
       await publicDeploy("ropsten", process.env.ROPSTEN_DEPLOYMENT_PRIVATE_KEY, timeout)
     }
-  
+
     if (args?.includes("--kovan")) {
       deployed = true
       await publicDeploy("kovan", process.env.KOVAN_DEPLOYMENT_PRIVATE_KEY, timeout)
     }
-  
+
     if (args?.includes("--rinkeby")) {
       deployed = true
       await publicDeploy("rinkeby", process.env.RINKEBY_DEPLOYMENT_PRIVATE_KEY, timeout)
     }
-  
+
     if (args?.includes("--mainnet")) {
       deployed = true
-      await publicDeploy("mainnet", process.env.MAINNET_DEPLOYMENT_PRIVATE_KEY, 10)
+      // await publicDeploy("mainnet", process.env.MAINNET_DEPLOYMENT_PRIVATE_KEY, 10)
+      console.error("TODO: SET UR GAS PRICES BRO")
     }
 
-    if (!deployed){
+    if (!deployed) {
       console.log("To perform a public deployemnt, pass in one or more public network flags")
       console.log("Options are:")
       console.log("  --goerli")
