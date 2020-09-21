@@ -148,9 +148,8 @@ library Archaeologists {
         arch.minimumDiggingFee = minimumDiggingFee;
         arch.maximumResurrectionTime = maximumResurrectionTime;
 
-        increaseFreeBond(self, msg.sender, freeBond);
-
         if (freeBond > 0) {
+            increaseFreeBond(self, msg.sender, freeBond);
             sarcoToken.transferFrom(msg.sender, address(this), freeBond);
         }
 

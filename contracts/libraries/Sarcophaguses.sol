@@ -16,14 +16,14 @@ library Sarcophaguses {
     function sarcophagusState(
         Types.SarcophagusStates sarcState,
         Types.SarcophagusStates state
-    ) public pure {
+    ) internal pure {
         string memory error = "sarcophagus already exists";
         if (state == Types.SarcophagusStates.Exists)
             error = "sarcophagus does not exist or is not active";
         require(sarcState == state, error);
     }
 
-    function wipeSarcophagusMoney(Types.Sarcophagus storage sarc) public {
+    function wipeSarcophagusMoney(Types.Sarcophagus storage sarc) private {
         sarc.storageFee = 0;
         sarc.diggingFee = 0;
         sarc.bounty = 0;
@@ -36,7 +36,7 @@ library Sarcophaguses {
         address paymentAddress,
         Types.Sarcophagus storage sarc,
         IERC20 sarcoToken
-    ) public returns (uint256, uint256) {
+    ) private returns (uint256, uint256) {
         uint256 halfToEmbalmer = sarc.currentCursedBond.div(2);
         uint256 halfToSender = sarc.currentCursedBond.sub(halfToEmbalmer);
         sarcoToken.transfer(
@@ -172,10 +172,10 @@ library Sarcophaguses {
         Utils.sarcophagusUpdater(sarc.embalmer);
 
         address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-        Types.Archaeologist storage arch = data.archaeologists[archAddress];
+        Types.Archaeologist memory arch = data.archaeologists[archAddress];
 
         sarcoToken.transfer(sarc.embalmer, sarc.bounty.add(sarc.storageFee));
-        sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee);
+        sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee); // why do we do digging fee, not storage fee?
 
         Archaeologists.freeUpBond(data, archAddress, sarc.currentCursedBond);
         wipeSarcophagusMoney(sarc);
@@ -183,6 +183,7 @@ library Sarcophaguses {
         data.archaeologistCancels[archAddress].push(assetDoubleHash);
 
         // TODO: update cursed bond calculation ? maybe
+        // TODO: update sarcophagus state, maybe need to update "analytics" data
 
         emit Events.CancelSarcophagus(assetDoubleHash);
 
