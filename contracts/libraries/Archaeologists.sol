@@ -168,7 +168,7 @@ library Archaeologists {
         return true;
     }
 
-    function withdrawalBond(
+    function withdrawBond(
         Datas.Data storage self,
         uint256 amount,
         IERC20 sarcoToken

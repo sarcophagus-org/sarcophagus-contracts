@@ -117,8 +117,8 @@ contract Sarcophagus {
             );
     }
 
-    function withdrawalBond(uint256 amount) public returns (bool) {
-        return Archaeologists.withdrawalBond(data, amount, sarcoToken);
+    function withdrawBond(uint256 amount) public returns (bool) {
+        return Archaeologists.withdrawBond(data, amount, sarcoToken);
     }
 
     function createSarcophagus(
