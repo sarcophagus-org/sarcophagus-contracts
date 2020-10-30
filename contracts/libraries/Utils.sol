@@ -18,16 +18,6 @@ library Utils {
         require(publicKey.length == 64, "public key must be 64 bytes");
     }
 
-    function publicKeyAccuracy(bytes memory publicKey, address addy)
-        public
-        pure
-    {
-        require(
-            addressFromPublicKey(publicKey) == addy,
-            "transaction address must have been derived from public key input"
-        );
-    }
-
     function hashCheck(bytes32 doubleHash, bytes memory singleHash)
         public
         pure

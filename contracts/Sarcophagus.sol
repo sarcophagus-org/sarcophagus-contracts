@@ -34,7 +34,8 @@ contract Sarcophagus {
         view
         returns (
             bool exists,
-            bytes memory publicKey,
+            address archaeologist,
+            bytes memory currentPublicKey,
             string memory endpoint,
             address paymentAddress,
             uint256 feePerByte,
@@ -48,7 +49,8 @@ contract Sarcophagus {
         Types.Archaeologist memory arch = data.archaeologists[addy];
         return (
             arch.exists,
-            arch.publicKey,
+            arch.archaeologist,
+            arch.currentPublicKey,
             arch.endpoint,
             arch.paymentAddress,
             arch.feePerByte,
@@ -70,7 +72,7 @@ contract Sarcophagus {
     }
 
     function registerArchaeologist(
-        bytes memory publicKey,
+        bytes memory currentPublicKey,
         string memory endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -82,7 +84,7 @@ contract Sarcophagus {
         return
             Archaeologists.registerArchaeologist(
                 data,
-                publicKey,
+                currentPublicKey,
                 endpoint,
                 paymentAddress,
                 feePerByte,
@@ -96,6 +98,7 @@ contract Sarcophagus {
 
     function updateArchaeologist(
         string memory endpoint,
+        bytes memory currentPublicKey,
         address paymentAddress,
         uint256 feePerByte,
         uint256 minimumBounty,
@@ -106,6 +109,7 @@ contract Sarcophagus {
         return
             Archaeologists.updateArchaeologist(
                 data,
+                currentPublicKey,
                 endpoint,
                 paymentAddress,
                 feePerByte,

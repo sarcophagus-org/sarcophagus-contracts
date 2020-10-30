@@ -4,7 +4,8 @@ pragma solidity ^0.6.0;
 library Types {
     struct Archaeologist {
         bool exists;
-        bytes publicKey;
+        address archaeologist;
+        bytes currentPublicKey;
         string endpoint;
         address paymentAddress;
         uint256 feePerByte;

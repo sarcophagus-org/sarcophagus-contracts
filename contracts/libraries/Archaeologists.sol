@@ -81,7 +81,7 @@ library Archaeologists {
 
     function registerArchaeologist(
         Datas.Data storage self,
-        bytes memory publicKey,
+        bytes memory currentPublicKey,
         string memory endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -92,14 +92,14 @@ library Archaeologists {
         IERC20 sarcoToken
     ) public returns (bool) {
         archaeologistExists(self, msg.sender, false);
-        Utils.publicKeyLength(publicKey);
-        Utils.publicKeyAccuracy(publicKey, msg.sender);
+        Utils.publicKeyLength(currentPublicKey);
 
         sarcoToken.transferFrom(msg.sender, address(this), freeBond);
 
         Types.Archaeologist memory newArch = Types.Archaeologist({
             exists: true,
-            publicKey: publicKey,
+            archaeologist: msg.sender,
+            currentPublicKey: currentPublicKey,
             endpoint: endpoint,
             paymentAddress: paymentAddress,
             feePerByte: feePerByte,
@@ -114,7 +114,8 @@ library Archaeologists {
         self.archaeologistAddresses.push(msg.sender);
 
         emit Events.RegisterArchaeologist(
-            newArch.publicKey,
+            newArch.archaeologist,
+            newArch.currentPublicKey,
             newArch.endpoint,
             newArch.paymentAddress,
             newArch.feePerByte,
@@ -129,6 +130,7 @@ library Archaeologists {
 
     function updateArchaeologist(
         Datas.Data storage self,
+        bytes memory currentPublicKey,
         string memory endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -141,6 +143,7 @@ library Archaeologists {
         archaeologistExists(self, msg.sender, true);
 
         Types.Archaeologist storage arch = self.archaeologists[msg.sender];
+        arch.currentPublicKey = currentPublicKey;
         arch.endpoint = endpoint;
         arch.paymentAddress = paymentAddress;
         arch.feePerByte = feePerByte;
@@ -154,7 +157,8 @@ library Archaeologists {
         }
 
         emit Events.UpdateArchaeologist(
-            arch.publicKey,
+            arch.archaeologist,
+            arch.currentPublicKey,
             arch.endpoint,
             arch.paymentAddress,
             arch.feePerByte,
@@ -176,7 +180,7 @@ library Archaeologists {
         Types.Archaeologist storage arch = self.archaeologists[msg.sender];
         reduceFreeBond(self, msg.sender, amount);
         sarcoToken.transfer(arch.paymentAddress, amount);
-        emit Events.WithdrawalFreeBond(arch.publicKey, amount);
+        emit Events.WithdrawalFreeBond(arch.archaeologist, amount);
         return true;
     }
 }

@@ -5,7 +5,8 @@ library Events {
     event Creation(address sarcophagusContract);
 
     event RegisterArchaeologist(
-        bytes publicKey,
+        address archaeologist,
+        bytes currentPublicKey,
         string endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -16,7 +17,8 @@ library Events {
     );
 
     event UpdateArchaeologist(
-        bytes publicKey,
+        address archaeologist,
+        bytes currentPublicKey,
         string endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -26,7 +28,7 @@ library Events {
         uint256 addedBond
     );
 
-    event WithdrawalFreeBond(bytes publicKey, uint256 withdrawnBond);
+    event WithdrawalFreeBond(address archaeologist, uint256 withdrawnBond);
 
     event CreateSarcophagus(
         bytes32 assetDoubleHash,
