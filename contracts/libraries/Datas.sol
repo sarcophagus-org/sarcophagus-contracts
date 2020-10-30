@@ -11,6 +11,7 @@ library Datas {
         mapping(address => bytes32[]) archaeologistCancels;
         mapping(address => bytes32[]) archaeologistAccusals;
         mapping(address => bytes32[]) archaeologistCleanups;
+        mapping(bytes => bool) archaeologistUsedKeys;
         mapping(bytes32 => Types.Sarcophagus) sarcophaguses;
         bytes32[] sarcophagusDoubleHashes;
     }

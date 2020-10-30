@@ -20,7 +20,8 @@ library Types {
 
     struct Sarcophagus {
         SarcophagusStates state;
-        bytes archaeologist;
+        address archaeologist;
+        bytes archaeologistPublicKey;
         address embalmer;
         string name;
         uint256 resurrectionTime;

@@ -6,14 +6,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 library Utils {
     using SafeMath for uint256;
 
-    function addressFromPublicKey(bytes memory publicKey)
-        public
-        pure
-        returns (address)
-    {
-        return address(uint160(uint256(keccak256(publicKey))));
-    }
-
     function publicKeyLength(bytes memory publicKey) public pure {
         require(publicKey.length == 64, "public key must be 64 bytes");
     }
@@ -38,14 +30,14 @@ library Utils {
     }
 
     function signatureCheck(
-        string memory assetId,
+        bytes memory data,
         uint8 v,
         bytes32 r,
         bytes32 s,
         address archAddress
     ) public pure {
         address hopefullyArchAddress = ecrecover(
-            keccak256(abi.encodePacked(assetId)),
+            keccak256(data),
             v,
             r,
             s
@@ -71,6 +63,7 @@ library Utils {
     {
         uint16 minimumResurrectionWindow = 30 minutes;
 
+        // TODO: why divide by 100?
         uint256 gracePeriod = (resurrectionTime.sub(block.timestamp)).div(100);
         if (gracePeriod < minimumResurrectionWindow) {
             gracePeriod = minimumResurrectionWindow;

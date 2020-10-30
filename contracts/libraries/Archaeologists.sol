@@ -130,7 +130,7 @@ library Archaeologists {
 
     function updateArchaeologist(
         Datas.Data storage self,
-        bytes memory currentPublicKey,
+        bytes memory newPublicKey,
         string memory endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -143,7 +143,15 @@ library Archaeologists {
         archaeologistExists(self, msg.sender, true);
 
         Types.Archaeologist storage arch = self.archaeologists[msg.sender];
-        arch.currentPublicKey = currentPublicKey;
+
+        if (keccak256(arch.currentPublicKey) != keccak256(newPublicKey)) {
+            emit Events.UpdateArchaeologistPublicKey(
+                arch.archaeologist,
+                newPublicKey
+            );
+            arch.currentPublicKey = newPublicKey;
+        }
+
         arch.endpoint = endpoint;
         arch.paymentAddress = paymentAddress;
         arch.feePerByte = feePerByte;
@@ -158,7 +166,6 @@ library Archaeologists {
 
         emit Events.UpdateArchaeologist(
             arch.archaeologist,
-            arch.currentPublicKey,
             arch.endpoint,
             arch.paymentAddress,
             arch.feePerByte,

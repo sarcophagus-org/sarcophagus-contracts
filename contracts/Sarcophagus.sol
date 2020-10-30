@@ -127,7 +127,7 @@ contract Sarcophagus {
 
     function createSarcophagus(
         string memory name,
-        bytes memory archaeologistPublicKey,
+        address archaeologist,
         uint256 resurrectionTime,
         uint256 storageFee,
         uint256 diggingFee,
@@ -139,7 +139,7 @@ contract Sarcophagus {
             Sarcophaguses.createSarcophagus(
                 data,
                 name,
-                archaeologistPublicKey,
+                archaeologist,
                 resurrectionTime,
                 storageFee,
                 diggingFee,
@@ -151,6 +151,7 @@ contract Sarcophagus {
     }
 
     function updateSarcophagus(
+        bytes memory newPublicKey,
         bytes32 assetDoubleHash,
         string memory assetId,
         uint8 v,
@@ -160,6 +161,7 @@ contract Sarcophagus {
         return
             Sarcophaguses.updateSarcophagus(
                 data,
+                newPublicKey,
                 assetDoubleHash,
                 assetId,
                 v,
