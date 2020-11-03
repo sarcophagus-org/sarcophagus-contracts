@@ -147,21 +147,34 @@ library Sarcophaguses {
         sarcophagusState(sarc.state, Types.SarcophagusStates.Exists);
         Utils.sarcophagusUpdater(sarc.embalmer);
         Utils.assetIdsCheck(sarc.assetId, assetId);
-        Utils.signatureCheck(abi.encodePacked(newPublicKey, assetId), v, r, s, sarc.archaeologist);
-        
-        require(!data.archaeologistUsedKeys[sarc.archaeologistPublicKey], "public key already used");
+        Utils.signatureCheck(
+            abi.encodePacked(newPublicKey, assetId),
+            v,
+            r,
+            s,
+            sarc.archaeologist
+        );
+
+        require(
+            !data.archaeologistUsedKeys[sarc.archaeologistPublicKey],
+            "public key already used"
+        );
         data.archaeologistUsedKeys[sarc.archaeologistPublicKey] = true;
 
         sarc.assetId = assetId;
 
-        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
+        Types.Archaeologist storage arch = data.archaeologists[sarc
+            .archaeologist];
         arch.currentPublicKey = newPublicKey;
-        
+
         sarcoToken.transfer(arch.paymentAddress, sarc.storageFee);
         sarc.storageFee = 0;
 
         emit Events.UpdateSarcophagus(assetDoubleHash, assetId);
-        emit Events.UpdateArchaeologistPublicKey(arch.archaeologist, arch.currentPublicKey);
+        emit Events.UpdateArchaeologistPublicKey(
+            arch.archaeologist,
+            arch.currentPublicKey
+        );
 
         return true;
     }
@@ -176,12 +189,17 @@ library Sarcophaguses {
         Utils.confirmAssetIdNotSet(sarc.assetId);
         Utils.sarcophagusUpdater(sarc.embalmer);
 
-        Types.Archaeologist memory arch = data.archaeologists[sarc.archaeologist];
+        Types.Archaeologist memory arch = data.archaeologists[sarc
+            .archaeologist];
 
         sarcoToken.transfer(sarc.embalmer, sarc.bounty.add(sarc.storageFee));
         sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee); // why do we do digging fee, not storage fee?
 
-        Archaeologists.freeUpBond(data, sarc.archaeologist, sarc.currentCursedBond);
+        Archaeologists.freeUpBond(
+            data,
+            sarc.archaeologist,
+            sarc.currentCursedBond
+        );
         wipeSarcophagusMoney(sarc);
 
         data.archaeologistCancels[sarc.archaeologist].push(assetDoubleHash);
@@ -208,7 +226,8 @@ library Sarcophaguses {
         Utils.resurrectionInFuture(sarc.resurrectionTime);
         Utils.resurrectionInFuture(resurrectionTime);
 
-        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
+        Types.Archaeologist storage arch = data.archaeologists[sarc
+            .archaeologist];
 
         Utils.withinArchaeologistLimits(
             resurrectionTime,
@@ -266,14 +285,19 @@ library Sarcophaguses {
 
         Utils.hashCheck(assetDoubleHash, singleHash);
 
-        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
+        Types.Archaeologist storage arch = data.archaeologists[sarc
+            .archaeologist];
 
         sarcoToken.transfer(
             arch.paymentAddress,
             sarc.diggingFee.add(sarc.bounty)
         );
 
-        Archaeologists.freeUpBond(data, sarc.archaeologist, sarc.currentCursedBond);
+        Archaeologists.freeUpBond(
+            data,
+            sarc.archaeologist,
+            sarc.currentCursedBond
+        );
         wipeSarcophagusMoney(sarc);
 
         sarc.state = Types.SarcophagusStates.Done;
@@ -336,9 +360,14 @@ library Sarcophaguses {
         Utils.sarcophagusUpdater(sarc.embalmer);
         Utils.resurrectionInFuture(sarc.resurrectionTime);
 
-        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
+        Types.Archaeologist storage arch = data.archaeologists[sarc
+            .archaeologist];
 
-        Archaeologists.freeUpBond(data, sarc.archaeologist, sarc.currentCursedBond);
+        Archaeologists.freeUpBond(
+            data,
+            sarc.archaeologist,
+            sarc.currentCursedBond
+        );
 
         sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee);
         wipeSarcophagusMoney(sarc);
