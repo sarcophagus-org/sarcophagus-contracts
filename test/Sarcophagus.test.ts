@@ -61,20 +61,6 @@ describe("Sarcophagus Manager", () => {
       })
     })
 
-    describe("requires the archaeologist transaction initiator and public key match", () => {
-      it("fails when the public key does not derive the transaction's msg.sender", async () => {
-        sarco = sarco.connect(wallet)
-        await expect(sarco.callStatic.registerArchaeologist(pubKey(wallet2), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)).to.be.revertedWith("transaction address must have been derived from public key input")
-      })
-
-      it("succeeds when the public key derives the transaction's msg.sender", async () => {
-        sarco = sarco.connect(wallet)
-        await sarco.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet.address, 0, 0, 0, 0, 0)
-        const count = await sarco.archaeologistCount()
-        expect(count).to.equal(1)
-      })
-    })
-
     describe("requires a minimum bounty value", () => {
       it("should succeed with a zero value", async () => {
         const ret = await sarco.callStatic.registerArchaeologist(pubKey(wallet), "https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
@@ -255,7 +241,7 @@ describe("Sarcophagus Manager", () => {
   describe("updates an archaeologist", () => {
     describe("doesn't work if the archaeologist is not registered", () => {
       it("cannot update archaeologist", async () => {
-        await expect(sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 0)).to.be.revertedWith("archaeologist has not been registered yet")
+        await expect(sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 0, 0)).to.be.revertedWith("archaeologist has not been registered yet")
       })
 
       it("cannot withdraw free bond", async () => {
@@ -273,9 +259,9 @@ describe("Sarcophagus Manager", () => {
         it("allows a new payment address to be set", async () => {
           const ogArch = await sarco.archaeologists(wallet.address)
           expect(ogArch.paymentAddress).to.equal(wallet.address)
-          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
+          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet2.address, 0, 0, 0, 0, 0)
           expect(result).to.be.true
-          await sarco.updateArchaeologist("https://test.com/post", wallet2.address, 0, 0, 0, 0, 0)
+          await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet2.address, 0, 0, 0, 0, 0)
           const arch = await sarco.archaeologists(wallet.address)
           expect(arch.paymentAddress).to.equal(wallet2.address)
         })
@@ -285,9 +271,9 @@ describe("Sarcophagus Manager", () => {
         it("allows the minimum bounty to be updated", async () => {
           const ogArch = await sarco.archaeologists(wallet.address)
           expect(ogArch.minimumBounty).to.equal(0)
-          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 1, 0, 0, 0)
+          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 1, 0, 0, 0)
           expect(result).to.be.true
-          await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 1, 0, 0, 0)
+          await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 1, 0, 0, 0)
           const arch = await sarco.archaeologists(wallet.address)
           expect(arch.minimumBounty).to.equal(1)
         })
@@ -297,9 +283,9 @@ describe("Sarcophagus Manager", () => {
         it("allows the minimum digging fee to be updated", async () => {
           const ogArch = await sarco.archaeologists(wallet.address)
           expect(ogArch.minimumDiggingFee).to.equal(0)
-          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 1, 0, 0)
+          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 1, 0, 0)
           expect(result).to.be.true
-          await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 1, 0, 0)
+          await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 1, 0, 0)
           const arch = await sarco.archaeologists(wallet.address)
           expect(arch.minimumDiggingFee).to.equal(1)
         })
@@ -309,9 +295,9 @@ describe("Sarcophagus Manager", () => {
         it("allows the maximum resurrection time to be updated", async () => {
           const ogArch = await sarco.archaeologists(wallet.address)
           expect(ogArch.maximumResurrectionTime).to.equal(0)
-          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 1, 0)
+          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 1, 0)
           expect(result).to.be.true
-          await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 1, 0)
+          await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 1, 0)
           const arch = await sarco.archaeologists(wallet.address)
           expect(arch.maximumResurrectionTime).to.equal(1)
         })
@@ -322,9 +308,9 @@ describe("Sarcophagus Manager", () => {
           const ogArch = await sarco.archaeologists(wallet.address)
           expect(ogArch.freeBond).to.equal(1)
           await token.approve(sarco.address, 3)
-          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
+          const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 0, 2)
           expect(result).to.be.true
-          await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
+          await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 0, 2)
           const arch = await sarco.archaeologists(wallet.address)
           expect(arch.freeBond).to.equal(3)
         })
@@ -337,7 +323,7 @@ describe("Sarcophagus Manager", () => {
           const balance = await token.balanceOf(sarco.address)
           expect(balance).to.equal(1)
           await token.approve(sarco.address, 3)
-          await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
+          await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 0, 2)
           const newBalance = await token.balanceOf(sarco.address)
           expect(newBalance).to.equal(3)
         })
@@ -359,9 +345,9 @@ describe("Sarcophagus Manager", () => {
 
           it("allows a withdrawal of less than full free bond amount", async () => {
             await token.approve(sarco.address, 3)
-            const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
+            const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 0, 2)
             expect(result).to.be.true
-            await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
+            await sarco.updateArchaeologist("https://test.com/post", pubKey(wallet2), wallet.address, 0, 0, 0, 0, 2)
             await sarco.withdrawBond(1)
             const arch = await sarco.archaeologists(wallet.address)
             expect(arch.freeBond).to.equal(2)

@@ -32,5 +32,6 @@ library Types {
         uint256 diggingFee;
         uint256 bounty;
         uint256 currentCursedBond;
+        bytes32 privateKey;
     }
 }

@@ -193,15 +193,17 @@ contract Sarcophagus {
             );
     }
 
-    function unwrapSarcophagus(bytes32 assetDoubleHash, bytes memory singleHash)
-        public
-        returns (bool)
-    {
+    function unwrapSarcophagus(
+        bytes32 assetDoubleHash,
+        bytes memory singleHash,
+        bytes32 privateKey
+    ) public returns (bool) {
         return
             Sarcophaguses.unwrapSarcophagus(
                 data,
                 assetDoubleHash,
                 singleHash,
+                privateKey,
                 sarcoToken
             );
     }
