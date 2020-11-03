@@ -9,6 +9,7 @@ import "./Events.sol";
 import "./Types.sol";
 import "./Datas.sol";
 import "./Archaeologists.sol";
+import "./PrivateKeys.sol";
 
 library Sarcophaguses {
     using SafeMath for uint256;
@@ -109,7 +110,8 @@ library Sarcophaguses {
             storageFee: storageFee,
             diggingFee: diggingFee,
             bounty: bounty,
-            currentCursedBond: cursedBondAmount
+            currentCursedBond: cursedBondAmount,
+            privateKey: 0
         });
 
         data.sarcophaguses[assetDoubleHash] = sarc;
@@ -277,6 +279,7 @@ library Sarcophaguses {
         Datas.Data storage data,
         bytes32 assetDoubleHash,
         bytes memory singleHash,
+        bytes32 privateKey,
         IERC20 sarcoToken
     ) public returns (bool) {
         Types.Sarcophagus storage sarc = data.sarcophaguses[assetDoubleHash];
@@ -284,6 +287,14 @@ library Sarcophaguses {
         Utils.unwrapTime(sarc.resurrectionTime, sarc.resurrectionWindow);
 
         Utils.hashCheck(assetDoubleHash, singleHash);
+        require(
+            PrivateKeys.keyVerification(
+                privateKey,
+                sarc.archaeologistPublicKey
+            ),
+            "!privateKey"
+        );
+        sarc.privateKey = privateKey;
 
         Types.Archaeologist storage arch = data.archaeologists[sarc
             .archaeologist];
