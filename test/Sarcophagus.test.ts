@@ -258,8 +258,8 @@ describe("Sarcophagus Manager", () => {
         await expect(sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 0)).to.be.revertedWith("archaeologist has not been registered yet")
       })
 
-      it("cannot withdrawal free bond", async () => {
-        await expect(sarco.callStatic.withdrawalBond(0)).to.be.revertedWith("archaeologist has not been registered yet")
+      it("cannot withdraw free bond", async () => {
+        await expect(sarco.callStatic.withdrawBond(0)).to.be.revertedWith("archaeologist has not been registered yet")
       })
     })
 
@@ -345,14 +345,14 @@ describe("Sarcophagus Manager", () => {
 
       describe("withdraws free bond from an archaeologist", () => {
         it("does not allow a withdrawal if not enough free bond", async () => {
-          await expect(sarco.callStatic.withdrawalBond(2)).to.be.revertedWith("archaeologist does not have enough free bond")
+          await expect(sarco.callStatic.withdrawBond(2)).to.be.revertedWith("archaeologist does not have enough free bond")
         })
 
         describe("enough free bond", () => {
           it("allows a withdrawal of full free bond amount", async () => {
-            const result = await sarco.callStatic.withdrawalBond(1)
+            const result = await sarco.callStatic.withdrawBond(1)
             expect(result).to.be.true
-            await sarco.withdrawalBond(1)
+            await sarco.withdrawBond(1)
             const arch = await sarco.archaeologists(wallet.address)
             expect(arch.freeBond).to.equal(0)
           })
@@ -362,7 +362,7 @@ describe("Sarcophagus Manager", () => {
             const result = await sarco.callStatic.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
             expect(result).to.be.true
             await sarco.updateArchaeologist("https://test.com/post", wallet.address, 0, 0, 0, 0, 2)
-            await sarco.withdrawalBond(1)
+            await sarco.withdrawBond(1)
             const arch = await sarco.archaeologists(wallet.address)
             expect(arch.freeBond).to.equal(2)
           })
@@ -371,7 +371,7 @@ describe("Sarcophagus Manager", () => {
         it("reduces the amount of money on the contract", async () => {
           const balance = await token.balanceOf(sarco.address)
           expect(balance).to.equal(1)
-          await sarco.withdrawalBond(1)
+          await sarco.withdrawBond(1)
           const newBalance = await token.balanceOf(sarco.address)
           expect(newBalance).to.equal(0)
         })

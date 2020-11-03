@@ -34,7 +34,8 @@ contract Sarcophagus {
         view
         returns (
             bool exists,
-            bytes memory publicKey,
+            address archaeologist,
+            bytes memory currentPublicKey,
             string memory endpoint,
             address paymentAddress,
             uint256 feePerByte,
@@ -48,7 +49,8 @@ contract Sarcophagus {
         Types.Archaeologist memory arch = data.archaeologists[addy];
         return (
             arch.exists,
-            arch.publicKey,
+            arch.archaeologist,
+            arch.currentPublicKey,
             arch.endpoint,
             arch.paymentAddress,
             arch.feePerByte,
@@ -70,7 +72,7 @@ contract Sarcophagus {
     }
 
     function registerArchaeologist(
-        bytes memory publicKey,
+        bytes memory currentPublicKey,
         string memory endpoint,
         address paymentAddress,
         uint256 feePerByte,
@@ -82,7 +84,7 @@ contract Sarcophagus {
         return
             Archaeologists.registerArchaeologist(
                 data,
-                publicKey,
+                currentPublicKey,
                 endpoint,
                 paymentAddress,
                 feePerByte,
@@ -96,6 +98,7 @@ contract Sarcophagus {
 
     function updateArchaeologist(
         string memory endpoint,
+        bytes memory currentPublicKey,
         address paymentAddress,
         uint256 feePerByte,
         uint256 minimumBounty,
@@ -106,6 +109,7 @@ contract Sarcophagus {
         return
             Archaeologists.updateArchaeologist(
                 data,
+                currentPublicKey,
                 endpoint,
                 paymentAddress,
                 feePerByte,
@@ -117,13 +121,13 @@ contract Sarcophagus {
             );
     }
 
-    function withdrawalBond(uint256 amount) public returns (bool) {
-        return Archaeologists.withdrawalBond(data, amount, sarcoToken);
+    function withdrawBond(uint256 amount) public returns (bool) {
+        return Archaeologists.withdrawBond(data, amount, sarcoToken);
     }
 
     function createSarcophagus(
         string memory name,
-        bytes memory archaeologistPublicKey,
+        address archaeologist,
         uint256 resurrectionTime,
         uint256 storageFee,
         uint256 diggingFee,
@@ -135,7 +139,7 @@ contract Sarcophagus {
             Sarcophaguses.createSarcophagus(
                 data,
                 name,
-                archaeologistPublicKey,
+                archaeologist,
                 resurrectionTime,
                 storageFee,
                 diggingFee,
@@ -147,6 +151,7 @@ contract Sarcophagus {
     }
 
     function updateSarcophagus(
+        bytes memory newPublicKey,
         bytes32 assetDoubleHash,
         string memory assetId,
         uint8 v,
@@ -156,6 +161,7 @@ contract Sarcophagus {
         return
             Sarcophaguses.updateSarcophagus(
                 data,
+                newPublicKey,
                 assetDoubleHash,
                 assetId,
                 v,

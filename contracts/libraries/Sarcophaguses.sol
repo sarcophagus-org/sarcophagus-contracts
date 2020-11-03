@@ -16,14 +16,14 @@ library Sarcophaguses {
     function sarcophagusState(
         Types.SarcophagusStates sarcState,
         Types.SarcophagusStates state
-    ) public pure {
+    ) internal pure {
         string memory error = "sarcophagus already exists";
         if (state == Types.SarcophagusStates.Exists)
             error = "sarcophagus does not exist or is not active";
         require(sarcState == state, error);
     }
 
-    function wipeSarcophagusMoney(Types.Sarcophagus storage sarc) public {
+    function wipeSarcophagusMoney(Types.Sarcophagus storage sarc) private {
         sarc.storageFee = 0;
         sarc.diggingFee = 0;
         sarc.bounty = 0;
@@ -36,7 +36,7 @@ library Sarcophaguses {
         address paymentAddress,
         Types.Sarcophagus storage sarc,
         IERC20 sarcoToken
-    ) public returns (uint256, uint256) {
+    ) private returns (uint256, uint256) {
         uint256 halfToEmbalmer = sarc.currentCursedBond.div(2);
         uint256 halfToSender = sarc.currentCursedBond.sub(halfToEmbalmer);
         sarcoToken.transfer(
@@ -59,7 +59,7 @@ library Sarcophaguses {
     function createSarcophagus(
         Datas.Data storage data,
         string memory name,
-        bytes memory archaeologistPublicKey,
+        address archaeologist,
         uint256 resurrectionTime,
         uint256 storageFee,
         uint256 diggingFee,
@@ -68,17 +68,14 @@ library Sarcophaguses {
         bytes memory recipientPublicKey,
         IERC20 sarcoToken
     ) public returns (bool) {
-        address archAddress = Utils.addressFromPublicKey(
-            archaeologistPublicKey
-        );
-        Archaeologists.archaeologistExists(data, archAddress, true);
+        Archaeologists.archaeologistExists(data, archaeologist, true);
         Utils.publicKeyLength(recipientPublicKey);
         sarcophagusState(
             data.sarcophaguses[assetDoubleHash].state,
             Types.SarcophagusStates.DoesNotExist
         );
         Utils.resurrectionInFuture(resurrectionTime);
-        Types.Archaeologist storage arch = data.archaeologists[archAddress];
+        Types.Archaeologist storage arch = data.archaeologists[archaeologist];
         Utils.withinArchaeologistLimits(
             resurrectionTime,
             diggingFee,
@@ -97,11 +94,12 @@ library Sarcophaguses {
         // TODO: implment an algorithm to figure this out
         uint256 cursedBondAmount = diggingFee.add(bounty);
 
-        Archaeologists.lockUpBond(data, archAddress, cursedBondAmount);
+        Archaeologists.lockUpBond(data, archaeologist, cursedBondAmount);
 
         Types.Sarcophagus memory sarc = Types.Sarcophagus({
             state: Types.SarcophagusStates.Exists,
-            archaeologist: archaeologistPublicKey,
+            archaeologist: archaeologist,
+            archaeologistPublicKey: arch.currentPublicKey,
             embalmer: msg.sender,
             name: name,
             resurrectionTime: resurrectionTime,
@@ -120,6 +118,7 @@ library Sarcophaguses {
         emit Events.CreateSarcophagus(
             assetDoubleHash,
             sarc.archaeologist,
+            sarc.archaeologistPublicKey,
             sarc.embalmer,
             sarc.name,
             sarc.resurrectionTime,
@@ -136,6 +135,7 @@ library Sarcophaguses {
 
     function updateSarcophagus(
         Datas.Data storage data,
+        bytes memory newPublicKey,
         bytes32 assetDoubleHash,
         string memory assetId,
         uint8 v,
@@ -147,16 +147,21 @@ library Sarcophaguses {
         sarcophagusState(sarc.state, Types.SarcophagusStates.Exists);
         Utils.sarcophagusUpdater(sarc.embalmer);
         Utils.assetIdsCheck(sarc.assetId, assetId);
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-        Utils.signatureCheck(assetId, v, r, s, archAddress);
+        Utils.signatureCheck(abi.encodePacked(newPublicKey, assetId), v, r, s, sarc.archaeologist);
+        
+        require(!data.archaeologistUsedKeys[sarc.archaeologistPublicKey], "public key already used");
+        data.archaeologistUsedKeys[sarc.archaeologistPublicKey] = true;
 
         sarc.assetId = assetId;
 
-        Types.Archaeologist memory arch = data.archaeologists[archAddress];
+        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
+        arch.currentPublicKey = newPublicKey;
+        
         sarcoToken.transfer(arch.paymentAddress, sarc.storageFee);
         sarc.storageFee = 0;
 
         emit Events.UpdateSarcophagus(assetDoubleHash, assetId);
+        emit Events.UpdateArchaeologistPublicKey(arch.archaeologist, arch.currentPublicKey);
 
         return true;
     }
@@ -171,18 +176,18 @@ library Sarcophaguses {
         Utils.confirmAssetIdNotSet(sarc.assetId);
         Utils.sarcophagusUpdater(sarc.embalmer);
 
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-        Types.Archaeologist storage arch = data.archaeologists[archAddress];
+        Types.Archaeologist memory arch = data.archaeologists[sarc.archaeologist];
 
         sarcoToken.transfer(sarc.embalmer, sarc.bounty.add(sarc.storageFee));
-        sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee);
+        sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee); // why do we do digging fee, not storage fee?
 
-        Archaeologists.freeUpBond(data, archAddress, sarc.currentCursedBond);
+        Archaeologists.freeUpBond(data, sarc.archaeologist, sarc.currentCursedBond);
         wipeSarcophagusMoney(sarc);
 
-        data.archaeologistCancels[archAddress].push(assetDoubleHash);
+        data.archaeologistCancels[sarc.archaeologist].push(assetDoubleHash);
 
         // TODO: update cursed bond calculation ? maybe
+        // TODO: update sarcophagus state, maybe need to update "analytics" data
 
         emit Events.CancelSarcophagus(assetDoubleHash);
 
@@ -203,8 +208,7 @@ library Sarcophaguses {
         Utils.resurrectionInFuture(sarc.resurrectionTime);
         Utils.resurrectionInFuture(resurrectionTime);
 
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-        Types.Archaeologist storage arch = data.archaeologists[archAddress];
+        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
 
         Utils.withinArchaeologistLimits(
             resurrectionTime,
@@ -220,12 +224,13 @@ library Sarcophaguses {
         // TODO: implement an algorithm to figure this out
         uint256 cursedBondAmount = diggingFee.add(bounty);
 
+        // TODO: do we need to adjust sarco token transferfrom here?
         if (cursedBondAmount > sarc.currentCursedBond) {
             uint256 diff = cursedBondAmount.sub(sarc.currentCursedBond);
-            Archaeologists.lockUpBond(data, archAddress, diff);
+            Archaeologists.lockUpBond(data, sarc.archaeologist, diff);
         } else if (cursedBondAmount < sarc.currentCursedBond) {
             uint256 diff = sarc.currentCursedBond.sub(cursedBondAmount);
-            Archaeologists.freeUpBond(data, archAddress, diff);
+            Archaeologists.freeUpBond(data, sarc.archaeologist, diff);
         }
 
         uint256 gracePeriod = Utils.getGracePeriod(resurrectionTime);
@@ -261,20 +266,19 @@ library Sarcophaguses {
 
         Utils.hashCheck(assetDoubleHash, singleHash);
 
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-        Types.Archaeologist storage arch = data.archaeologists[archAddress];
+        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
 
         sarcoToken.transfer(
             arch.paymentAddress,
             sarc.diggingFee.add(sarc.bounty)
         );
 
-        Archaeologists.freeUpBond(data, archAddress, sarc.currentCursedBond);
+        Archaeologists.freeUpBond(data, sarc.archaeologist, sarc.currentCursedBond);
         wipeSarcophagusMoney(sarc);
 
         sarc.state = Types.SarcophagusStates.Done;
 
-        data.archaeologistSuccesses[archAddress].push(assetDoubleHash);
+        data.archaeologistSuccesses[sarc.archaeologist].push(assetDoubleHash);
 
         // TODO: update cursed bond calculation
 
@@ -299,17 +303,15 @@ library Sarcophaguses {
         Utils.resurrectionInFuture(sarc.resurrectionTime);
         Utils.hashCheck(assetDoubleHash, singleHash);
 
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-
         (uint256 halfToSender, uint256 halfToEmbalmer) = splitSendDone(
             data,
-            archAddress,
+            sarc.archaeologist,
             paymentAddress,
             sarc,
             sarcoToken
         );
 
-        data.archaeologistAccusals[archAddress].push(assetDoubleHash);
+        data.archaeologistAccusals[sarc.archaeologist].push(assetDoubleHash);
 
         // TODO: update cursed bond calculation
 
@@ -334,10 +336,9 @@ library Sarcophaguses {
         Utils.sarcophagusUpdater(sarc.embalmer);
         Utils.resurrectionInFuture(sarc.resurrectionTime);
 
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-        Types.Archaeologist storage arch = data.archaeologists[archAddress];
+        Types.Archaeologist storage arch = data.archaeologists[sarc.archaeologist];
 
-        Archaeologists.freeUpBond(data, archAddress, sarc.currentCursedBond);
+        Archaeologists.freeUpBond(data, sarc.archaeologist, sarc.currentCursedBond);
 
         sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee);
         wipeSarcophagusMoney(sarc);
@@ -367,17 +368,15 @@ library Sarcophaguses {
             "sarcophagus resurrection period must be in the past"
         );
 
-        address archAddress = Utils.addressFromPublicKey(sarc.archaeologist);
-
         (uint256 halfToSender, uint256 halfToEmbalmer) = splitSendDone(
             data,
-            archAddress,
+            sarc.archaeologist,
             paymentAddress,
             sarc,
             sarcoToken
         );
 
-        data.archaeologistCleanups[archAddress].push(assetDoubleHash);
+        data.archaeologistCleanups[sarc.archaeologist].push(assetDoubleHash);
 
         // TODO: calculate new bond multiplier
 

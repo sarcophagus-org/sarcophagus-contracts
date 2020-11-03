@@ -9,7 +9,7 @@
     "deploy": "ts-node ./deploy",
     "ganache": "dotenv npm run ganache:repeatable",
     "ganache:repeatable": "ganache-cli --port \"$DEVELOPMENT_BLOCKCHAIN_PORT\" --mnemonic \"$DEVELOPMENT_SEED_PHRASE\"",
-    "test": "export NODE_ENV=test && mocha \"test/**/*.test.{js,ts}\" -r ts-node/register/transpile-only"
+    "test": "export NODE_ENV=test && mocha --timeout 10000 \"test/**/*.test.{js,ts}\" -r ts-node/register/transpile-only"
   },
   "author": "Adam Gall <adam@decentlabs.io>",
   "license": "ISC",
