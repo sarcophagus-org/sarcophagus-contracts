@@ -320,7 +320,8 @@ library Sarcophaguses {
         emit Events.UnwrapSarcophagus(
             sarc.assetId,
             assetDoubleHash,
-            singleHash
+            singleHash,
+            privateKey
         );
 
         return true;

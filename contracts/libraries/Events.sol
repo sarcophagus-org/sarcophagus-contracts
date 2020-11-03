@@ -69,7 +69,8 @@ library Events {
     event UnwrapSarcophagus(
         string assetId,
         bytes32 indexed assetDoubleHash,
-        bytes singleHash
+        bytes singleHash,
+        bytes32 privatekey
     );
 
     event AccuseArchaeologist(
