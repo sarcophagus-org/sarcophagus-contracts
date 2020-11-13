@@ -19,7 +19,7 @@ export const linkLibraries = async (wallet: Signer, logger: Function | null, env
 
   link(Sarcophaguses, 'contracts/libraries/Utils.sol:Utils', utilsLibrary.address)
   link(Sarcophaguses, 'contracts/libraries/Archaeologists.sol:Archaeologists', archsLibrary.address)
-  link(Sarcophaguses, 'contracts/libraries/PrivateKeys.sol:PrivateKeys', archsLibrary.address)
+  link(Sarcophaguses, 'contracts/libraries/PrivateKeys.sol:PrivateKeys', privateKeysLibrary.address)
   const sarcsLibrary = await deployContract(wallet, Sarcophaguses, [])
   if (logger && environment) logger(environment, "sarcophaguses library", sarcsLibrary)
 
