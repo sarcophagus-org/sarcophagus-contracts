@@ -14,5 +14,8 @@ library Datas {
         mapping(bytes => bool) archaeologistUsedKeys;
         mapping(bytes32 => Types.Sarcophagus) sarcophaguses;
         bytes32[] sarcophagusDoubleHashes;
+
+        // TODO: keep smart data structures so arch servers can be more efficient
+        // mapping(address => bytes32[]) sarcophagusesPerArch;
     }
 }
