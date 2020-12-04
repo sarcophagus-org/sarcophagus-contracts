@@ -80,36 +80,22 @@ contract Sarcophagus {
         returns (
             Types.SarcophagusStates state,
             address archaeologist,
-            bytes memory archaeologistPublicKey,
-            address embalmer,
-            string memory name,
             uint256 resurrectionTime,
             uint256 resurrectionWindow,
+            string memory name,
             string memory assetId,
-            bytes memory recipientPublicKey,
-            uint256 storageFee,
-            uint256 diggingFee,
-            uint256 bounty,
-            uint256 currentCursedBond,
-            bytes32 privateKey
+            uint256 storageFee
         )
     {
         Types.Sarcophagus memory sarc = data.sarcophaguses[doubleHash];
         return (
             sarc.state,
             sarc.archaeologist,
-            sarc.archaeologistPublicKey,
-            sarc.embalmer,
-            sarc.name,
             sarc.resurrectionTime,
             sarc.resurrectionWindow,
+            sarc.name,
             sarc.assetId,
-            sarc.recipientPublicKey,
             sarc.storageFee,
-            sarc.diggingFee,
-            sarc.bounty,
-            sarc.currentCursedBond,
-            sarc.privateKey
         );
     }
 
