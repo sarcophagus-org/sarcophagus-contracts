@@ -204,10 +204,11 @@ library Sarcophaguses {
         );
         wipeSarcophagusMoney(sarc);
 
+        sarc.state = Types.SarcophagusStates.Done;
+
         data.archaeologistCancels[sarc.archaeologist].push(assetDoubleHash);
 
         // TODO: update cursed bond calculation ? maybe
-        // TODO: update sarcophagus state, maybe need to update "analytics" data
 
         emit Events.CancelSarcophagus(assetDoubleHash);
 
