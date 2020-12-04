@@ -241,6 +241,12 @@ library Sarcophaguses {
             arch.minimumBounty
         );
 
+        sarcoToken.transferFrom(
+            msg.sender,
+            address(this),
+            diggingFee
+        );
+
         sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee);
 
         // TODO: implement an algorithm to figure this out
