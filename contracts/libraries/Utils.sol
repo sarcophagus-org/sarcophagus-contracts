@@ -77,7 +77,7 @@ library Utils {
         view
     {
         require(
-            resurrectionTime < block.timestamp,
+            resurrectionTime <= block.timestamp,
             "it's not time to unwrap the sarcophagus"
         );
         require(
