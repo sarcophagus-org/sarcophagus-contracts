@@ -95,7 +95,7 @@ contract Sarcophagus {
             sarc.resurrectionWindow,
             sarc.name,
             sarc.assetId,
-            sarc.storageFee,
+            sarc.storageFee
         );
     }
 
