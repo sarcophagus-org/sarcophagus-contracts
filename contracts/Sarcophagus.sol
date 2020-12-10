@@ -66,6 +66,41 @@ contract Sarcophagus {
         return data.sarcophagusDoubleHashes.length;
     }
 
+    function sarcophagusDoubleHash(uint256 index)
+        public
+        view
+        returns (bytes32)
+    {
+        return data.sarcophagusDoubleHashes[index];
+    }
+
+    function sarcophagus(bytes32 doubleHash)
+        public
+        view
+        returns (
+            Types.SarcophagusStates state,
+            address archaeologist,
+            bytes memory archaeologistPublicKey,
+            uint256 resurrectionTime,
+            uint256 resurrectionWindow,
+            string memory name,
+            string memory assetId,
+            uint256 storageFee
+        )
+    {
+        Types.Sarcophagus memory sarc = data.sarcophaguses[doubleHash];
+        return (
+            sarc.state,
+            sarc.archaeologist,
+            sarc.archaeologistPublicKey,
+            sarc.resurrectionTime,
+            sarc.resurrectionWindow,
+            sarc.name,
+            sarc.assetId,
+            sarc.storageFee
+        );
+    }
+
     constructor(address _sarcoToken) public {
         sarcoToken = IERC20(_sarcoToken);
         emit Events.Creation(_sarcoToken);
