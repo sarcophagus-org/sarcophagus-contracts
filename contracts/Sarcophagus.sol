@@ -80,6 +80,7 @@ contract Sarcophagus {
         returns (
             Types.SarcophagusStates state,
             address archaeologist,
+            bytes memory archaeologistPublicKey,
             uint256 resurrectionTime,
             uint256 resurrectionWindow,
             string memory name,
@@ -91,6 +92,7 @@ contract Sarcophagus {
         return (
             sarc.state,
             sarc.archaeologist,
+            sarc.archaeologistPublicKey,
             sarc.resurrectionTime,
             sarc.resurrectionWindow,
             sarc.name,
