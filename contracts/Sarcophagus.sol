@@ -80,6 +80,7 @@ contract Sarcophagus {
         returns (
             Types.SarcophagusStates state,
             address archaeologist,
+            address embalmer,
             bytes memory archaeologistPublicKey,
             uint256 resurrectionTime,
             uint256 resurrectionWindow,
