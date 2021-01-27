@@ -93,6 +93,7 @@ contract Sarcophagus {
         return (
             sarc.state,
             sarc.archaeologist,
+            sarc.embalmer,
             sarc.archaeologistPublicKey,
             sarc.resurrectionTime,
             sarc.resurrectionWindow,
