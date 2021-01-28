@@ -16,5 +16,5 @@ module.exports = async function (deployer, network) {
     process.exit(1)
   }
 
-  deployer.deploy(Sarcophagus, sarcoTokenAddress)
+  await deployer.deploy(Sarcophagus, sarcoTokenAddress)
 }
