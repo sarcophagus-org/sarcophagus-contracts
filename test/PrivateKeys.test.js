@@ -1,17 +1,10 @@
-import { expect, use } from "chai"
-import { Contract } from "ethers"
-import { deployContract, MockProvider, solidity } from "ethereum-waffle"
-import PrivateKeys from "../build/PrivateKeys.json"
+const PrivateKeys = artifacts.require("PrivateKeys")
 
-use(solidity)
-
-describe("Private Keys", () => {
-  const provider = new MockProvider()
-  const [wallet] = provider.getWallets()
-  let privateKeys: Contract;
+contract("Private Keys", () => {
+  let privateKeys
 
   beforeEach(async () => {
-    privateKeys = await deployContract(wallet, PrivateKeys)
+    privateKeys = await PrivateKeys.new()
   })
 
   it("verifies correct key", async () => {    
