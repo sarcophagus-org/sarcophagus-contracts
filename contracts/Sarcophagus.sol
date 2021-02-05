@@ -74,6 +74,54 @@ contract Sarcophagus {
         return data.sarcophagusDoubleHashes[index];
     }
 
+    function embalmerSarcophagusCount(address embalmer)
+        public
+        view
+        returns (uint256)
+    {
+        return data.embalmerSarcophaguses[embalmer].length;
+    }
+
+    function embalmerSarcophagusDoubleHash(address embalmer, uint256 index)
+        public
+        view
+        returns (bytes32)
+    {
+        return data.embalmerSarcophaguses[embalmer][index];
+    }
+
+    function archaeologistSarcophagusCount(address archaeologist)
+        public
+        view
+        returns (uint256)
+    {
+        return data.embalmerSarcophaguses[archaeologist].length;
+    }
+
+    function archaeologistSarcophagusDoubleHash(address archaeologist, uint256 index)
+        public
+        view
+        returns (bytes32)
+    {
+        return data.archaeologistSarcophaguses[archaeologist][index];
+    }
+
+    function recipientSarcophagusCount(address recipient)
+        public
+        view
+        returns (uint256)
+    {
+        return data.recipientSarcophaguses[recipient].length;
+    }
+
+    function recipientSarcophagusDoubleHash(address recipient, uint256 index)
+        public
+        view
+        returns (bytes32)
+    {
+        return data.recipientSarcophaguses[recipient][index];
+    }
+
     function sarcophagus(bytes32 doubleHash)
         public
         view

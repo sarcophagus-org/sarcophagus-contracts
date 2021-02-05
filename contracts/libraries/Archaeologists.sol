@@ -79,6 +79,15 @@ library Archaeologists {
         reduceCursedBond(self, archAddress, amount);
     }
 
+    function getCursedBond(uint256 diggingFee, uint256 bounty)
+        public
+        pure
+        returns (uint256)
+    {
+        // TODO: implment a better algorithm, using some concept of past state
+        return diggingFee.add(bounty);
+    }
+
     function registerArchaeologist(
         Datas.Data storage self,
         bytes memory currentPublicKey,
@@ -96,19 +105,20 @@ library Archaeologists {
 
         sarcoToken.transferFrom(msg.sender, address(this), freeBond);
 
-        Types.Archaeologist memory newArch = Types.Archaeologist({
-            exists: true,
-            archaeologist: msg.sender,
-            currentPublicKey: currentPublicKey,
-            endpoint: endpoint,
-            paymentAddress: paymentAddress,
-            feePerByte: feePerByte,
-            minimumBounty: minimumBounty,
-            minimumDiggingFee: minimumDiggingFee,
-            maximumResurrectionTime: maximumResurrectionTime,
-            freeBond: freeBond,
-            cursedBond: 0
-        });
+        Types.Archaeologist memory newArch =
+            Types.Archaeologist({
+                exists: true,
+                archaeologist: msg.sender,
+                currentPublicKey: currentPublicKey,
+                endpoint: endpoint,
+                paymentAddress: paymentAddress,
+                feePerByte: feePerByte,
+                minimumBounty: minimumBounty,
+                minimumDiggingFee: minimumDiggingFee,
+                maximumResurrectionTime: maximumResurrectionTime,
+                freeBond: freeBond,
+                cursedBond: 0
+            });
 
         self.archaeologists[msg.sender] = newArch;
         self.archaeologistAddresses.push(msg.sender);

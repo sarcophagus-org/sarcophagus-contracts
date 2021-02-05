@@ -63,7 +63,7 @@ library Utils {
     {
         uint16 minimumResurrectionWindow = 30 minutes;
 
-        // TODO: why divide by 100?
+        // edit: 1%
         uint256 gracePeriod = (resurrectionTime.sub(block.timestamp)).div(100);
         if (gracePeriod < minimumResurrectionWindow) {
             gracePeriod = minimumResurrectionWindow;
