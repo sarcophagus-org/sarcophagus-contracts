@@ -9,76 +9,156 @@ import "./Events.sol";
 import "./Types.sol";
 import "./Datas.sol";
 
+/**
+ * @title A library implementing Archaeologist-specific logic in the
+ * Sarcophagus system
+ * @notice This library includes public functions for manipulating
+ * archaeologists in the Sarcophagus system
+ */
 library Archaeologists {
     using SafeMath for uint256;
 
+    /**
+     * @notice Checks that an archaeologist exists, or doesn't exist, and
+     * and reverts if necessary
+     * @param data the system's data struct instance
+     * @param account the archaeologist address to check existence of
+     * @param exists bool which flips whether function reverts if archaeologist
+     * exists or not
+     */
     function archaeologistExists(
         Datas.Data storage data,
-        address addy,
-        bool huh
+        address account,
+        bool exists
     ) public view {
+        // set the error message
         string memory err = "archaeologist has not been registered yet";
-        if (!huh) err = "archaeologist has already been registered";
-        require(data.archaeologists[addy].exists == huh, err);
+        if (!exists) err = "archaeologist has already been registered";
+
+        // revert if necessary
+        require(data.archaeologists[account].exists == exists, err);
     }
 
+    /**
+     * @notice Increases internal data structure which tracks free bond per
+     * archaeologist
+     * @param data the system's data struct instance
+     * @param archAddress the archaeologist's address to operate on
+     * @param amount the amount to increase free bond by
+     */
     function increaseFreeBond(
         Datas.Data storage data,
         address archAddress,
         uint256 amount
     ) private {
+        // load up the archaeologist
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
+
+        // increase the freeBond variable by amount
         arch.freeBond = arch.freeBond.add(amount);
     }
 
-    function reduceFreeBond(
+    /**
+     * @notice Decreases internal data structure which tracks free bond per
+     * archaeologist
+     * @param data the system's data struct instance
+     * @param archAddress the archaeologist's address to operate on
+     * @param amount the amount to decrease free bond by
+     */
+    function decreaseFreeBond(
         Datas.Data storage data,
         address archAddress,
         uint256 amount
     ) private {
+        // load up the archaeologist
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
+
+        // decrease the free bond variable by amount, reverting if necessary
         arch.freeBond = arch.freeBond.sub(
             amount,
             "archaeologist does not have enough free bond"
         );
     }
 
+    /**
+     * @notice Increases internal data structure which tracks cursed bond per
+     * archaeologist
+     * @param data the system's data struct instance
+     * @param archAddress the archaeologist's address to operate on
+     * @param amount the amount to increase cursed bond by
+     */
     function increaseCursedBond(
         Datas.Data storage data,
         address archAddress,
         uint256 amount
     ) private {
+        // load up the archaeologist
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
+
+        // increase the freeBond variable by amount
         arch.cursedBond = arch.cursedBond.add(amount);
     }
 
-    function reduceCursedBond(
+    /**
+     * @notice Decreases internal data structure which tracks cursed bond per
+     * archaeologist
+     * @param data the system's data struct instance
+     * @param archAddress the archaeologist's address to operate on
+     * @param amount the amount to decrease cursed bond by
+     */
+    function decreaseCursedBond(
         Datas.Data storage data,
         address archAddress,
         uint256 amount
     ) public {
+        // load up the archaeologist
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
+
+        // decrease the free bond variable by amount
         arch.cursedBond = arch.cursedBond.sub(amount);
     }
 
+    /**
+     * @notice Given an archaeologist and amount, decrease free bond and
+     * increase cursed bond
+     * @param data the system's data struct instance
+     * @param archAddress the archaeologist's address to operate on
+     * @param amount the amount to decrease free bond and increase cursed bond
+     */
     function lockUpBond(
         Datas.Data storage data,
         address archAddress,
         uint256 amount
     ) public {
-        reduceFreeBond(data, archAddress, amount);
+        decreaseFreeBond(data, archAddress, amount);
         increaseCursedBond(data, archAddress, amount);
     }
 
+    /**
+     * @notice Given an archaeologist and amount, increase free bond and
+     * decrease cursed bond
+     * @param data the system's data struct instance
+     * @param archAddress the archaeologist's address to operate on
+     * @param amount the amount to increase free bond and decrease cursed bond
+     */
     function freeUpBond(
-        Datas.Data storage self,
+        Datas.Data storage data,
         address archAddress,
         uint256 amount
     ) public {
-        increaseFreeBond(self, archAddress, amount);
-        reduceCursedBond(self, archAddress, amount);
+        increaseFreeBond(data, archAddress, amount);
+        decreaseCursedBond(data, archAddress, amount);
     }
 
+    /**
+     * @notice Calculates and returns the curse for any sarcophagus
+     * @param diggingFee the digging fee of a sarcophagus
+     * @param bounty the bounty of a sarcophagus
+     * @return amount of the curse
+     * @dev Current implementation simply adds the two inputs together. Future
+     * strategies should use historical data to build a curve to change this
+     * amount over time.
+     */
     function getCursedBond(uint256 diggingFee, uint256 bounty)
         public
         pure
@@ -88,8 +168,29 @@ library Archaeologists {
         return diggingFee.add(bounty);
     }
 
+    /**
+     * @notice Registers a new archaeologist in the system
+     * @param data the system's data struct instance
+     * @param currentPublicKey the public key to be used in the first
+     * sarcophagus
+     * @param endpoint where to contact this archaeologist on the internet
+     * @param paymentAddress all collected payments for the archaeologist will
+     * be sent here
+     * @param feePerByte amount of SARCO tokens charged per byte of storage
+     * being sent to Arweave
+     * @param minimumBounty the minimum bounty for a sarcophagus that the
+     * archaeologist will accept
+     * @param minimumDiggingFee the minimum digging fee for a sarcophagus that
+     * the archaeologist will accept
+     * @param maximumResurrectionTime the maximum resurrection time for a
+     * sarcophagus that the archaeologist will accept
+     * @param freeBond the amount of SARCO bond that the archaeologist wants
+     * to start with
+     * @param sarcoToken the SARCO token used for payment handling
+     * @return bool indicating that the registration was successful
+     */
     function registerArchaeologist(
-        Datas.Data storage self,
+        Datas.Data storage data,
         bytes memory currentPublicKey,
         string memory endpoint,
         address paymentAddress,
@@ -100,15 +201,23 @@ library Archaeologists {
         uint256 freeBond,
         IERC20 sarcoToken
     ) public returns (bool) {
-        archaeologistExists(self, msg.sender, false);
+        // verify that the archaeologist does not already exist
+        archaeologistExists(data, msg.sender, false);
+
+        // verify that the public key length is accurate
         Utils.publicKeyLength(currentPublicKey);
 
-        sarcoToken.transferFrom(msg.sender, address(this), freeBond);
+        // transfer SARCO tokens from the archaeologist to this contract, to be
+        // used as their free bond. can be 0, which indicates that the
+        // archaeologist is not eligible for any new jobs
+        if (freeBond > 0) {
+            sarcoToken.transferFrom(msg.sender, address(this), freeBond);
+        }
 
+        // create a new archaeologist
         Types.Archaeologist memory newArch =
             Types.Archaeologist({
                 exists: true,
-                archaeologist: msg.sender,
                 currentPublicKey: currentPublicKey,
                 endpoint: endpoint,
                 paymentAddress: paymentAddress,
@@ -120,11 +229,13 @@ library Archaeologists {
                 cursedBond: 0
             });
 
-        self.archaeologists[msg.sender] = newArch;
-        self.archaeologistAddresses.push(msg.sender);
+        // save the new archaeologist into relevant data structures
+        data.archaeologists[msg.sender] = newArch;
+        data.archaeologistAddresses.push(msg.sender);
 
+        // emit an event
         emit Events.RegisterArchaeologist(
-            newArch.archaeologist,
+            msg.sender,
             newArch.currentPublicKey,
             newArch.endpoint,
             newArch.paymentAddress,
@@ -135,11 +246,33 @@ library Archaeologists {
             newArch.freeBond
         );
 
+        // return true
         return true;
     }
 
+    /**
+     * @notice An archaeologist may update their profile
+     * @param data the system's data struct instance
+     * @param endpoint where to contact this archaeologist on the internet
+     * @param newPublicKey the public key to be used in the next
+     * sarcophagus
+     * @param paymentAddress all collected payments for the archaeologist will
+     * be sent here
+     * @param feePerByte amount of SARCO tokens charged per byte of storage
+     * being sent to Arweave
+     * @param minimumBounty the minimum bounty for a sarcophagus that the
+     * archaeologist will accept
+     * @param minimumDiggingFee the minimum digging fee for a sarcophagus that
+     * the archaeologist will accept
+     * @param maximumResurrectionTime the maximum resurrection time for a
+     * sarcophagus that the archaeologist will accept
+     * @param freeBond the amount of SARCO bond that the archaeologist wants
+     * to add to their profile
+     * @param sarcoToken the SARCO token used for payment handling
+     * @return bool indicating that the update was successful
+     */
     function updateArchaeologist(
-        Datas.Data storage self,
+        Datas.Data storage data,
         bytes memory newPublicKey,
         string memory endpoint,
         address paymentAddress,
@@ -150,18 +283,20 @@ library Archaeologists {
         uint256 freeBond,
         IERC20 sarcoToken
     ) public returns (bool) {
-        archaeologistExists(self, msg.sender, true);
+        // verify that the archaeologist exists, and is the sender of this
+        // transaction
+        archaeologistExists(data, msg.sender, true);
 
-        Types.Archaeologist storage arch = self.archaeologists[msg.sender];
+        // load up the archaeologist
+        Types.Archaeologist storage arch = data.archaeologists[msg.sender];
 
+        // if archaeologist is updating their active public key, emit an event
         if (keccak256(arch.currentPublicKey) != keccak256(newPublicKey)) {
-            emit Events.UpdateArchaeologistPublicKey(
-                arch.archaeologist,
-                newPublicKey
-            );
+            emit Events.UpdateArchaeologistPublicKey(msg.sender, newPublicKey);
             arch.currentPublicKey = newPublicKey;
         }
 
+        // update the rest of the archaeologist profile
         arch.endpoint = endpoint;
         arch.paymentAddress = paymentAddress;
         arch.feePerByte = feePerByte;
@@ -169,13 +304,16 @@ library Archaeologists {
         arch.minimumDiggingFee = minimumDiggingFee;
         arch.maximumResurrectionTime = maximumResurrectionTime;
 
+        // the freeBond variable acts as an incrementer, so only if it's above
+        // zero will we update their profile variable and transfer the tokens
         if (freeBond > 0) {
-            increaseFreeBond(self, msg.sender, freeBond);
+            increaseFreeBond(data, msg.sender, freeBond);
             sarcoToken.transferFrom(msg.sender, address(this), freeBond);
         }
 
+        // emit an event
         emit Events.UpdateArchaeologist(
-            arch.archaeologist,
+            msg.sender,
             arch.endpoint,
             arch.paymentAddress,
             arch.feePerByte,
@@ -185,19 +323,37 @@ library Archaeologists {
             freeBond
         );
 
+        // return true
         return true;
     }
 
+    /**
+     * @notice Archaeologist can withdraw any of their free bond
+     * @param data the system's data struct instance
+     * @param amount the amount of the archaeologist's free bond that they're
+     * withdrawing
+     * @param sarcoToken the SARCO token used for payment handling
+     * @return bool indicating that the withdrawal was successful
+     */
     function withdrawBond(
-        Datas.Data storage self,
+        Datas.Data storage data,
         uint256 amount,
         IERC20 sarcoToken
     ) public returns (bool) {
-        archaeologistExists(self, msg.sender, true);
-        Types.Archaeologist storage arch = self.archaeologists[msg.sender];
-        reduceFreeBond(self, msg.sender, amount);
-        sarcoToken.transfer(arch.paymentAddress, amount);
-        emit Events.WithdrawalFreeBond(arch.archaeologist, amount);
+        // verify that the archaeologist exists, and is the sender of this
+        // transaction
+        archaeologistExists(data, msg.sender, true);
+
+        // move free bond out of the archaeologist
+        decreaseFreeBond(data, msg.sender, amount);
+
+        // transfer the freed SARCOs back to the archaeologist
+        sarcoToken.transfer(msg.sender, amount);
+
+        // emit event
+        emit Events.WithdrawalFreeBond(msg.sender, amount);
+
+        // return true
         return true;
     }
 }

@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/sarcophagus-org/sarcophagus-contracts#readme",
   "engines": {
-    "node": "15.6.0"
+    "node": "14.15.4"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^3.3.0",

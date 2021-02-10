@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
+/**
+ * @title A collection of Events
+ * @notice This library defines all of the Events that the Sarcophagus system
+ * emits
+ */
 library Events {
     event Creation(address sarcophagusContract);
 
@@ -38,7 +43,7 @@ library Events {
     );
 
     event CreateSarcophagus(
-        bytes32 indexed assetDoubleHash,
+        bytes32 indexed identifier,
         address indexed archaeologist,
         bytes archaeologistPublicKey,
         address embalmer,
@@ -52,13 +57,13 @@ library Events {
         uint256 cursedBond
     );
 
-    event UpdateSarcophagus(bytes32 indexed assetDoubleHash, string assetId);
+    event UpdateSarcophagus(bytes32 indexed identifier, string assetId);
 
-    event CancelSarcophagus(bytes32 indexed assetDoubleHash);
+    event CancelSarcophagus(bytes32 indexed identifier);
 
     event RewrapSarcophagus(
         string assetId,
-        bytes32 indexed assetDoubleHash,
+        bytes32 indexed identifier,
         uint256 resurrectionTime,
         uint256 resurrectionWindow,
         uint256 diggingFee,
@@ -68,22 +73,21 @@ library Events {
 
     event UnwrapSarcophagus(
         string assetId,
-        bytes32 indexed assetDoubleHash,
-        bytes singleHash,
+        bytes32 indexed identifier,
         bytes32 privatekey
     );
 
     event AccuseArchaeologist(
-        bytes32 indexed assetDoubleHash,
+        bytes32 indexed identifier,
         address indexed accuser,
         uint256 accuserBondReward,
         uint256 embalmerBondReward
     );
 
-    event BurySarcophagus(bytes32 indexed assetDoubleHash);
+    event BurySarcophagus(bytes32 indexed identifier);
 
     event CleanUpSarcophagus(
-        bytes32 indexed assetDoubleHash,
+        bytes32 indexed identifier,
         address indexed cleaner,
         uint256 cleanerBondReward,
         uint256 embalmerBondReward

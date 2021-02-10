@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
+/**
+ * @title A collection of defined structs
+ * @notice This library defines the various data models that the Sarcophagus
+ * system uses
+ */
 library Types {
     struct Archaeologist {
         bool exists;
-        address archaeologist;
         bytes currentPublicKey;
         string endpoint;
         address paymentAddress;
