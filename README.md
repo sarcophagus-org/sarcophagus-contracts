@@ -78,6 +78,28 @@ To deploy to other networks, add the relevant network block into `truffle-config
 $ npx truffle migrate --network <yourNewNetwork>
 ```
 
+## Public Deployments
+
+The contracts are currently deployed on public networks.
+
+### Goerli
+
+**Libraries**
+
+| Name | Address |
+| --- | --- |
+| Utils | `0x17001EDf972E3b0a51718bee91413b30CDfe5D73` |
+| Archaeologists | `0xE1d999A9a14872025D9C2f951f8f13c1ED6A585d` |
+| PrivateKeys | `0x32A7B3c72b13e670107788740e218F2B0FeD8D88` |
+| Sarcophaguses | `0x5af7270d1b5A88Eb433B997b031F73BD34476eFc` |
+
+**Contracts**
+
+| Name | Address |
+| --- | --- |
+| Migrations | `0x04577D0ed278f503fbdcF5aE77439eAa6a89cB44` |
+| Sarcophagus | `0xb6E8176987F6e5010e1908aaBA0369054000a344` |
+
 ## Final notes
 
 Any time you make any changes to the smart contracts, don't forget to re-compile before executing any of the above commands
