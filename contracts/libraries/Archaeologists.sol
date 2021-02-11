@@ -183,7 +183,8 @@ library Archaeologists {
      * @param minimumDiggingFee the minimum digging fee for a sarcophagus that
      * the archaeologist will accept
      * @param maximumResurrectionTime the maximum resurrection time for a
-     * sarcophagus that the archaeologist will accept
+     * sarcophagus that the archaeologist will accept, in relative terms (i.e.
+     * "1 year" is 31536000 (seconds))
      * @param freeBond the amount of SARCO bond that the archaeologist wants
      * to start with
      * @param sarcoToken the SARCO token used for payment handling
@@ -265,7 +266,8 @@ library Archaeologists {
      * @param minimumDiggingFee the minimum digging fee for a sarcophagus that
      * the archaeologist will accept
      * @param maximumResurrectionTime the maximum resurrection time for a
-     * sarcophagus that the archaeologist will accept
+     * sarcophagus that the archaeologist will accept, in relative terms (i.e.
+     * "1 year" is 31536000 (seconds))
      * @param freeBond the amount of SARCO bond that the archaeologist wants
      * to add to their profile
      * @param sarcoToken the SARCO token used for payment handling

@@ -166,7 +166,7 @@ library Utils {
      * @param diggingFee the digging fee to check
      * @param bounty the bounty to check
      * @param maximumResurrectionTime the maximum resurrection time to check
-     * against
+     * against, in relative terms (i.e. "1 year" is 31536000 (seconds))
      * @param minimumDiggingFee the minimum digging fee to check against
      * @param minimumBounty the minimum bounty to check against
      */

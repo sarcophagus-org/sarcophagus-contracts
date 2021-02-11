@@ -84,7 +84,8 @@ contract Sarcophagus {
      * @return minimumDiggingFee the minimum digging fee for a sarcophagus
      * that the given archaeologist will accept
      * @return maximumResurrectionTime the maximum resurrection time for a
-     * sarcophagus that the given archaeologist will accept
+     * sarcophagus that the given archaeologist will accept, in relative terms
+     * (i.e. "1 year" is 31536000 (seconds))
      * @return freeBond the amount of SARCO bond that is available (to be
      * cursed) for the given archaeologist
      * @return cursedBond the amount of SARCO which is currenly bonded in
@@ -289,7 +290,8 @@ contract Sarcophagus {
      * @param minimumDiggingFee the minimum digging fee for a sarcophagus that
      * the archaeologist will accept
      * @param maximumResurrectionTime the maximum resurrection time for a
-     * sarcophagus that the archaeologist will accept
+     * sarcophagus that the archaeologist will accept, in relative terms (i.e.
+     * "1 year" is 31536000 (seconds))
      * @param freeBond the amount of SARCO bond that the archaeologist wants
      * to start with
      * @return bool indicating that the registration was successful
@@ -333,7 +335,8 @@ contract Sarcophagus {
      * @param minimumDiggingFee the minimum digging fee for a sarcophagus that
      * the archaeologist will accept
      * @param maximumResurrectionTime the maximum resurrection time for a
-     * sarcophagus that the archaeologist will accept
+     * sarcophagus that the archaeologist will accept, in relative terms (i.e.
+     * "1 year" is 31536000 (seconds))
      * @param freeBond the amount of SARCO bond that the archaeologist wants
      * to add to their profile
      * @return bool indicating that the update was successful

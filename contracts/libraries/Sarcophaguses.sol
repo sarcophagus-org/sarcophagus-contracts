@@ -143,7 +143,8 @@ library Sarcophaguses {
             arch.minimumBounty
         );
 
-        // transfer digging fee + bounty + storage fee from embalmer to this contract
+        // transfer digging fee + bounty + storage fee from embalmer to this
+        // contract
         sarcoToken.transferFrom(
             msg.sender,
             address(this),
