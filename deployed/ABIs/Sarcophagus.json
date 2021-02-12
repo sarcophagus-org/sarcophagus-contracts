@@ -1,0 +1,768 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_sarcoToken",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "sarcoToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "archaeologistCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "archaeologistAddresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "archaeologists",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "bytes",
+            "name": "currentPublicKey",
+            "type": "bytes"
+          },
+          {
+            "internalType": "string",
+            "name": "endpoint",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "paymentAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "feePerByte",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumBounty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumDiggingFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maximumResurrectionTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "freeBond",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cursedBond",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Types.Archaeologist",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "sarcophagusCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "sarcophagusIdentifier",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "embalmer",
+        "type": "address"
+      }
+    ],
+    "name": "embalmerSarcophagusCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "embalmer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "embalmerSarcophagusIdentifier",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "archaeologist",
+        "type": "address"
+      }
+    ],
+    "name": "archaeologistSarcophagusCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "archaeologist",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "archaeologistSarcophagusIdentifier",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "recipientSarcophagusCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "recipientSarcophagusIdentifier",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      }
+    ],
+    "name": "sarcophagus",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum Types.SarcophagusStates",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "archaeologist",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "archaeologistPublicKey",
+            "type": "bytes"
+          },
+          {
+            "internalType": "address",
+            "name": "embalmer",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "resurrectionTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "resurrectionWindow",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "assetId",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes",
+            "name": "recipientPublicKey",
+            "type": "bytes"
+          },
+          {
+            "internalType": "uint256",
+            "name": "storageFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "diggingFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "bounty",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currentCursedBond",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "privateKey",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct Types.Sarcophagus",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "currentPublicKey",
+        "type": "bytes"
+      },
+      {
+        "internalType": "string",
+        "name": "endpoint",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "paymentAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feePerByte",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumBounty",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumDiggingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maximumResurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "freeBond",
+        "type": "uint256"
+      }
+    ],
+    "name": "registerArchaeologist",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "endpoint",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "newPublicKey",
+        "type": "bytes"
+      },
+      {
+        "internalType": "address",
+        "name": "paymentAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feePerByte",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumBounty",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumDiggingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maximumResurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "freeBond",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateArchaeologist",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawBond",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "archaeologist",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "resurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "storageFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "diggingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bounty",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "recipientPublicKey",
+        "type": "bytes"
+      }
+    ],
+    "name": "createSarcophagus",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "newPublicKey",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "string",
+        "name": "assetId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint8",
+        "name": "v",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "updateSarcophagus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      }
+    ],
+    "name": "cancelSarcophagus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "resurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "diggingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bounty",
+        "type": "uint256"
+      }
+    ],
+    "name": "rewrapSarcophagus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "privateKey",
+        "type": "bytes32"
+      }
+    ],
+    "name": "unwrapSarcophagus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "singleHash",
+        "type": "bytes"
+      },
+      {
+        "internalType": "address",
+        "name": "paymentAddress",
+        "type": "address"
+      }
+    ],
+    "name": "accuseArchaeologist",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      }
+    ],
+    "name": "burySarcophagus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "identifier",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "paymentAddress",
+        "type": "address"
+      }
+    ],
+    "name": "cleanUpSarcophagus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

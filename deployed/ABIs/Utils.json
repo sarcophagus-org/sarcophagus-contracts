@@ -1,0 +1,208 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "publicKey",
+        "type": "bytes"
+      }
+    ],
+    "name": "publicKeyLength",
+    "outputs": [],
+    "stateMutability": "pure",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "doubleHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "singleHash",
+        "type": "bytes"
+      }
+    ],
+    "name": "hashCheck",
+    "outputs": [],
+    "stateMutability": "pure",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "assetId",
+        "type": "string"
+      }
+    ],
+    "name": "confirmAssetIdNotSet",
+    "outputs": [],
+    "stateMutability": "pure",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "existingAssetId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "newAssetId",
+        "type": "string"
+      }
+    ],
+    "name": "assetIdsCheck",
+    "outputs": [],
+    "stateMutability": "pure",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "uint8",
+        "name": "v",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "signatureCheck",
+    "outputs": [],
+    "stateMutability": "pure",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "resurrectionTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "resurrectionInFuture",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "resurrectionTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "getGracePeriod",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "resurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "resurrectionWindow",
+        "type": "uint256"
+      }
+    ],
+    "name": "unwrapTime",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "sarcophagusUpdater",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "resurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "diggingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bounty",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maximumResurrectionTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumDiggingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumBounty",
+        "type": "uint256"
+      }
+    ],
+    "name": "withinArchaeologistLimits",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  }
+]
