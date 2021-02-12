@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./libraries/Events.sol";
 import "./libraries/Types.sol";
@@ -26,8 +25,6 @@ import "./libraries/Sarcophaguses.sol";
  * many libraries
  */
 contract Sarcophagus {
-    using SafeMath for uint256;
-
     // keep a reference to the SARCO token, which is used for payments
     // throughout the system
     IERC20 public sarcoToken;
@@ -40,7 +37,7 @@ contract Sarcophagus {
      * @notice Contract constructor
      * @param _sarcoToken The address of the SARCO token
      */
-    constructor(address _sarcoToken) public {
+    constructor(address _sarcoToken) {
         sarcoToken = IERC20(_sarcoToken);
         emit Events.Creation(_sarcoToken);
     }
@@ -71,55 +68,14 @@ contract Sarcophagus {
      * @notice Given an archaeologist address, return that archaeologist's
      * profile
      * @param account The archaeologist account's address
-     * @return exists if the given archaeologist address is registered
-     * @return currentPublicKey the public key which should be used for the
-     * next created sarcophagus, for this archaeologist
-     * @return endpoint where to contact this archaeologist on the internet
-     * @return paymentAddress all collected payments for the archaeologist
-     * will be sent here
-     * @return feePerByte amount of SARCO tokens charged per byte of storage
-     * being sent to Arweave
-     * @return minimumBounty the minimum bounty for a sarcophagus that the
-     * given archaeologist will accept
-     * @return minimumDiggingFee the minimum digging fee for a sarcophagus
-     * that the given archaeologist will accept
-     * @return maximumResurrectionTime the maximum resurrection time for a
-     * sarcophagus that the given archaeologist will accept, in relative terms
-     * (i.e. "1 year" is 31536000 (seconds))
-     * @return freeBond the amount of SARCO bond that is available (to be
-     * cursed) for the given archaeologist
-     * @return cursedBond the amount of SARCO which is currenly bonded in
-     * existing sarcophagi
+     * @return the Archaeologist object
      */
     function archaeologists(address account)
         public
         view
-        returns (
-            bool exists,
-            bytes memory currentPublicKey,
-            string memory endpoint,
-            address paymentAddress,
-            uint256 feePerByte,
-            uint256 minimumBounty,
-            uint256 minimumDiggingFee,
-            uint256 maximumResurrectionTime,
-            uint256 freeBond,
-            uint256 cursedBond
-        )
+        returns (Types.Archaeologist memory)
     {
-        Types.Archaeologist memory arch = _data.archaeologists[account];
-        return (
-            arch.exists,
-            arch.currentPublicKey,
-            arch.endpoint,
-            arch.paymentAddress,
-            arch.feePerByte,
-            arch.minimumBounty,
-            arch.minimumDiggingFee,
-            arch.maximumResurrectionTime,
-            arch.freeBond,
-            arch.cursedBond
-        );
+        return _data.archaeologists[account];
     }
 
     /**
@@ -234,46 +190,14 @@ contract Sarcophagus {
     /**
      * @notice Returns sarcophagus data given an indentifier
      * @param identifier the unique identifier a sarcophagus
-     * @return state of the sarcophagus
-     * @return archaeologist assigned to the sarcopahgus
-     * @return embalmer who created the sarcophagus
-     * @return archaeologistPublicKey the public key that the archaeologist
-     * used to encrypt this sarcophgagus
-     * @return resurrectionTime the time by which the sarcophagus needs to be
-     * rewrapped before it can be unwraped
-     * @return resurrectionWindow the time window after resurrection time
-     * during which the archaeologist can unwrap the sarcophagus
-     * @return name of the sarcopahgus
-     * @return assetId the Arweave identifier of the sarcophagus
-     * @return storageFee the storage fee collected by the archaeologist
+     * @return sarc the Sarcophagus object
      */
     function sarcophagus(bytes32 identifier)
         public
         view
-        returns (
-            Types.SarcophagusStates state,
-            address archaeologist,
-            address embalmer,
-            bytes memory archaeologistPublicKey,
-            uint256 resurrectionTime,
-            uint256 resurrectionWindow,
-            string memory name,
-            string memory assetId,
-            uint256 storageFee
-        )
+        returns (Types.Sarcophagus memory)
     {
-        Types.Sarcophagus memory sarc = _data.sarcophaguses[identifier];
-        return (
-            sarc.state,
-            sarc.archaeologist,
-            sarc.embalmer,
-            sarc.archaeologistPublicKey,
-            sarc.resurrectionTime,
-            sarc.resurrectionWindow,
-            sarc.name,
-            sarc.assetId,
-            sarc.storageFee
-        );
+        return _data.sarcophaguses[identifier];
     }
 
     /**
@@ -294,7 +218,7 @@ contract Sarcophagus {
      * "1 year" is 31536000 (seconds))
      * @param freeBond the amount of SARCO bond that the archaeologist wants
      * to start with
-     * @return bool indicating that the registration was successful
+     * @return index of the new archaeologist
      */
     function registerArchaeologist(
         bytes memory currentPublicKey,
@@ -305,7 +229,7 @@ contract Sarcophagus {
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
         uint256 freeBond
-    ) public returns (bool) {
+    ) public returns (uint256) {
         return
             Archaeologists.registerArchaeologist(
                 _data,
@@ -391,7 +315,7 @@ contract Sarcophagus {
      * @param identifier the identifier of the sarcophagus, which is the hash
      * of the hash of the inner encrypted layer of the sarcophagus
      * @param recipientPublicKey the public key of the recipient
-     * @return bool indicating that the creation was successful
+     * @return index of the new sarcophagus
      */
     function createSarcophagus(
         string memory name,
@@ -402,7 +326,7 @@ contract Sarcophagus {
         uint256 bounty,
         bytes32 identifier,
         bytes memory recipientPublicKey
-    ) public returns (bool) {
+    ) public returns (uint256) {
         return
             Sarcophaguses.createSarcophagus(
                 _data,

@@ -6,6 +6,7 @@
   "scripts": {
     "compile": "truffle compile",
     "develop": "truffle develop",
+    "coverage": "truffle run coverage",
     "test": "truffle test"
   },
   "repository": {
@@ -22,11 +23,11 @@
     "node": "14.15.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^3.3.0",
     "@truffle/hdwallet-provider": "^1.2.1",
     "dotenv": "^8.2.0",
     "ethereumjs-wallet": "^1.0.1",
-    "truffle": "^5.1.63",
+    "solidity-coverage": "^0.7.14",
+    "truffle": "^5.1.49",
     "truffle-assertions": "^0.9.2"
   }
 }

@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-// taken from
-
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 
 /**
  * @title Private key verification
@@ -35,10 +33,13 @@ library PrivateKeys {
                 bytes32(x1),
                 bytes32(mulmod(uint256(scalar), x1, m))
             );
+
         address xyAddress =
             address(
-                uint256(keccak256(pubKey)) &
-                    0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                uint160(
+                    uint256(keccak256(pubKey)) &
+                        0x00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                )
             );
         return xyAddress == signer;
     }

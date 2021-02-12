@@ -3,7 +3,7 @@ const Sarcophagus = artifacts.require("Sarcophagus")
 
 module.exports = async function (deployer, network) {
   let sarcoTokenAddress
-  if (["develop", "test"].includes(network)) {
+  if (["develop", "test", "soliditycoverage"].includes(network)) {
     await deployer.deploy(SarcoTokenMock)
     const sarcoTokenMock = await SarcoTokenMock.deployed()
     sarcoTokenAddress = sarcoTokenMock.address
@@ -13,6 +13,7 @@ module.exports = async function (deployer, network) {
     sarcoTokenAddress = "0x7697b462a7c4ff5f8b55bdbc2f4076c2af9cf51a"
   } else {
     console.error("Which network are we on?")
+    console.error(network)
     process.exit(1)
   }
 

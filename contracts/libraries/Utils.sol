@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
-
-import "@openzeppelin/contracts/math/SafeMath.sol";
+pragma solidity ^0.8.0;
 
 /**
  * @title Utility functions used within the Sarcophagus system
@@ -10,8 +8,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
  * @dev these functions are all stateless, public, pure/view
  */
 library Utils {
-    using SafeMath for uint256;
-
     /**
      * @notice Reverts if the public key length is not exactly 64 bytes long
      * @param publicKey the key to check length of
@@ -111,7 +107,7 @@ library Utils {
 
         // calculate 1% of the relative time between now and the resurrection
         // time
-        uint256 gracePeriod = (resurrectionTime.sub(block.timestamp)).div(100);
+        uint256 gracePeriod = (resurrectionTime - block.timestamp) / 100;
 
         // if our calculated grace period is less than the minimum time, we'll
         // use the minimum time instead
@@ -143,7 +139,7 @@ library Utils {
 
         // revert if too late
         require(
-            resurrectionTime.add(resurrectionWindow) >= block.timestamp,
+            resurrectionTime + resurrectionWindow >= block.timestamp,
             "the resurrection window has expired"
         );
     }
@@ -180,7 +176,7 @@ library Utils {
     ) public view {
         // revert if the given resurrection time is too far in the future
         require(
-            resurrectionTime <= block.timestamp.add(maximumResurrectionTime),
+            resurrectionTime <= block.timestamp + maximumResurrectionTime,
             "resurrection time too far in the future"
         );
 

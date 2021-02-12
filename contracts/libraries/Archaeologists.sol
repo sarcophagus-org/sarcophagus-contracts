@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./Utils.sol";
 import "./Events.sol";
@@ -16,8 +15,6 @@ import "./Datas.sol";
  * archaeologists in the Sarcophagus system
  */
 library Archaeologists {
-    using SafeMath for uint256;
-
     /**
      * @notice Checks that an archaeologist exists, or doesn't exist, and
      * and reverts if necessary
@@ -55,7 +52,7 @@ library Archaeologists {
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
 
         // increase the freeBond variable by amount
-        arch.freeBond = arch.freeBond.add(amount);
+        arch.freeBond = arch.freeBond + amount;
     }
 
     /**
@@ -74,10 +71,11 @@ library Archaeologists {
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
 
         // decrease the free bond variable by amount, reverting if necessary
-        arch.freeBond = arch.freeBond.sub(
-            amount,
+        require(
+            arch.freeBond >= amount,
             "archaeologist does not have enough free bond"
         );
+        arch.freeBond = arch.freeBond - amount;
     }
 
     /**
@@ -96,7 +94,7 @@ library Archaeologists {
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
 
         // increase the freeBond variable by amount
-        arch.cursedBond = arch.cursedBond.add(amount);
+        arch.cursedBond = arch.cursedBond + amount;
     }
 
     /**
@@ -115,7 +113,7 @@ library Archaeologists {
         Types.Archaeologist storage arch = data.archaeologists[archAddress];
 
         // decrease the free bond variable by amount
-        arch.cursedBond = arch.cursedBond.sub(amount);
+        arch.cursedBond = arch.cursedBond - amount;
     }
 
     /**
@@ -165,7 +163,7 @@ library Archaeologists {
         returns (uint256)
     {
         // TODO: implment a better algorithm, using some concept of past state
-        return diggingFee.add(bounty);
+        return diggingFee + bounty;
     }
 
     /**
@@ -188,7 +186,7 @@ library Archaeologists {
      * @param freeBond the amount of SARCO bond that the archaeologist wants
      * to start with
      * @param sarcoToken the SARCO token used for payment handling
-     * @return bool indicating that the registration was successful
+     * @return index of the new archaeologist
      */
     function registerArchaeologist(
         Datas.Data storage data,
@@ -201,7 +199,7 @@ library Archaeologists {
         uint256 maximumResurrectionTime,
         uint256 freeBond,
         IERC20 sarcoToken
-    ) public returns (bool) {
+    ) public returns (uint256) {
         // verify that the archaeologist does not already exist
         archaeologistExists(data, msg.sender, false);
 
@@ -247,8 +245,8 @@ library Archaeologists {
             newArch.freeBond
         );
 
-        // return true
-        return true;
+        // return index of the new archaeologist
+        return data.archaeologistAddresses.length - 1;
     }
 
     /**

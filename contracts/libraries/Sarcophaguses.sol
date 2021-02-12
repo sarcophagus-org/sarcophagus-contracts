@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.6.0;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./Utils.sol";
 import "./Events.sol";
@@ -18,8 +17,6 @@ import "./PrivateKeys.sol";
  * sarcophagi in the Sarcophagus system
  */
 library Sarcophaguses {
-    using SafeMath for uint256;
-
     /**
      * @notice Reverts if the given sarcState does not equal the comparison
      * state
@@ -58,14 +55,14 @@ library Sarcophaguses {
     ) private returns (uint256, uint256) {
         // split the sarcophagus's cursed bond into two halves, taking into
         // account solidity math
-        uint256 halfToEmbalmer = sarc.currentCursedBond.div(2);
-        uint256 halfToSender = sarc.currentCursedBond.sub(halfToEmbalmer);
+        uint256 halfToEmbalmer = sarc.currentCursedBond / 2;
+        uint256 halfToSender = sarc.currentCursedBond - halfToEmbalmer;
 
         // transfer the cursed half, plus bounty, plus digging fee to the
         // embalmer
         sarcoToken.transfer(
             sarc.embalmer,
-            sarc.bounty.add(sarc.diggingFee).add(halfToEmbalmer)
+            sarc.bounty + sarc.diggingFee + halfToEmbalmer
         );
 
         // transfer the other half of the cursed bond to the transaction caller
@@ -100,7 +97,7 @@ library Sarcophaguses {
      * of the hash of the inner encrypted layer of the sarcophagus
      * @param recipientPublicKey the public key of the recipient
      * @param sarcoToken the SARCO token used for payment handling
-     * @return bool indicating that the creation was successful
+     * @return index of the new sarcophagus
      */
     function createSarcophagus(
         Datas.Data storage data,
@@ -113,7 +110,7 @@ library Sarcophaguses {
         bytes32 identifier,
         bytes memory recipientPublicKey,
         IERC20 sarcoToken
-    ) public returns (bool) {
+    ) public returns (uint256) {
         // confirm that the archaeologist exists
         Archaeologists.archaeologistExists(data, archaeologist, true);
 
@@ -148,7 +145,7 @@ library Sarcophaguses {
         sarcoToken.transferFrom(
             msg.sender,
             address(this),
-            diggingFee.add(bounty).add(storageFee)
+            diggingFee + bounty + storageFee
         );
 
         // calculate the amount of archaeologist's bond to lock up
@@ -204,8 +201,8 @@ library Sarcophaguses {
             sarc.currentCursedBond
         );
 
-        // return true
-        return true;
+        // return index of the new sarcophagus
+        return data.sarcophagusIdentifiers.length - 1;
     }
 
     /**
@@ -312,7 +309,7 @@ library Sarcophaguses {
         Utils.sarcophagusUpdater(sarc.embalmer);
 
         // transfer the bounty and storage fee back to the embalmer
-        sarcoToken.transfer(sarc.embalmer, sarc.bounty.add(sarc.storageFee));
+        sarcoToken.transfer(sarc.embalmer, sarc.bounty + sarc.storageFee);
 
         // load the archaeologist
         Types.Archaeologist memory arch =
@@ -404,10 +401,10 @@ library Sarcophaguses {
         // amount, calculate difference and lock it up. if it's less than,
         // calculate difference and free it up.
         if (cursedBondAmount > sarc.currentCursedBond) {
-            uint256 diff = cursedBondAmount.sub(sarc.currentCursedBond);
+            uint256 diff = cursedBondAmount - sarc.currentCursedBond;
             Archaeologists.lockUpBond(data, sarc.archaeologist, diff);
         } else if (cursedBondAmount < sarc.currentCursedBond) {
-            uint256 diff = sarc.currentCursedBond.sub(cursedBondAmount);
+            uint256 diff = sarc.currentCursedBond - cursedBondAmount;
             Archaeologists.freeUpBond(data, sarc.archaeologist, diff);
         }
 
@@ -477,10 +474,7 @@ library Sarcophaguses {
             data.archaeologists[sarc.archaeologist];
 
         // transfer the Digging fee and bounty over to the archaeologist
-        sarcoToken.transfer(
-            arch.paymentAddress,
-            sarc.diggingFee.add(sarc.bounty)
-        );
+        sarcoToken.transfer(arch.paymentAddress, sarc.diggingFee + sarc.bounty);
 
         // free up the archaeologist's cursed bond, because this sarcophagus is
         // done
@@ -629,8 +623,7 @@ library Sarcophaguses {
 
         // verify that the resurrection window has expired
         require(
-            sarc.resurrectionTime.add(sarc.resurrectionWindow) <
-                block.timestamp,
+            sarc.resurrectionTime + sarc.resurrectionWindow < block.timestamp,
             "sarcophagus resurrection period must be in the past"
         );
 
