@@ -1,9 +1,9 @@
 const truffleAssert = require("truffle-assertions")
 
 const { token: _token, sarco: _sarco } = require("./Sarcophagus.test")
-const { generatePublicKey } = require("./helpers")
+const { generateKeys } = require("./helpers")
 
-const BN = web3.utils.BN
+const toBN = web3.utils.toBN
 
 contract("Archaeologists", (accounts) => {
   const [wallet, wallet2] = accounts
@@ -28,7 +28,7 @@ contract("Archaeologists", (accounts) => {
         })
 
         it("slightly short", async () => {
-          const publickKey = generatePublicKey()
+          const publickKey = generateKeys().public
           const smaller = publickKey.subarray(0, publickKey.length - 1)
           expect(smaller).to.have.lengthOf(63)
           await truffleAssert.reverts(
@@ -38,7 +38,7 @@ contract("Archaeologists", (accounts) => {
         })
 
         it("slightly long", async () => {
-          const bigger = Buffer.concat([generatePublicKey(), Buffer.from("00", "hex")])
+          const bigger = Buffer.concat([generateKeys().public, Buffer.from("00", "hex")])
           expect(bigger).to.have.lengthOf(65)
           await truffleAssert.reverts(
             sarco.registerArchaeologist.call(bigger, "https://test.com/post", wallet2, 0, 0, 0, 0, 0),
@@ -47,7 +47,7 @@ contract("Archaeologists", (accounts) => {
         })
 
         it("very long", async () => {
-          const publickKey = generatePublicKey()
+          const publickKey = generateKeys().public
           const biggest = Buffer.concat([publickKey, publickKey])
           expect(biggest).to.have.lengthOf(128)
           await truffleAssert.reverts(
@@ -59,9 +59,9 @@ contract("Archaeologists", (accounts) => {
 
       describe("and should succeed with a correct public key length", () => {
         it("just right", async () => {
-          const publicKey = generatePublicKey()
+          const publicKey = generateKeys().public
           const register = await sarco.registerArchaeologist.call(publicKey, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
-          expect(register.eq(new BN(0))).to.be.true
+          expect(register.eq(toBN(0))).to.be.true
           await sarco.registerArchaeologist(publicKey, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
           const count = await sarco.archaeologistCount()
           expect(count.toNumber()).to.equal(1)
@@ -71,56 +71,56 @@ contract("Archaeologists", (accounts) => {
 
     describe("requires a minimum bounty value", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 1, 0, 0, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 1, 0, 0, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
     })
 
     describe("requires a minimum digging fee", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 1, 0, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 1, 0, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
     })
 
     describe("requires a maximum resurrection time", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 1, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 1, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
     })
 
     describe("requires a bond", () => {
       it("should succeed with a zero value", async () => {
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
+        expect(ret.eq(toBN(0))).to.be.true
       })
 
       it("should succeed with a non-zero value", async () => {
         await token.approve(sarco.address, 1)
-        const ret = await sarco.registerArchaeologist.call(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 1)
-        expect(ret.eq(new BN(0))).to.be.true
+        const ret = await sarco.registerArchaeologist.call(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 1)
+        expect(ret.eq(toBN(0))).to.be.true
       })
     })
 
     describe("does not allow same key to register twice", () => {
       it("with with same payment address", async () => {
-        const publicKey = generatePublicKey()
+        const publicKey = generateKeys().public
         await sarco.registerArchaeologist(publicKey, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
         await truffleAssert.reverts(
           sarco.registerArchaeologist.call(publicKey, "https://test.com/post", wallet2, 0, 0, 0, 0, 0),
@@ -129,7 +129,7 @@ contract("Archaeologists", (accounts) => {
       })
 
       it("with different payment addresses", async () => {
-        const publicKey = generatePublicKey()
+        const publicKey = generateKeys().public
         await sarco.registerArchaeologist(publicKey, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
         await truffleAssert.reverts(
           sarco.registerArchaeologist.call(publicKey, "https://test.com/post", wallet, 0, 0, 0, 0, 0),
@@ -140,15 +140,15 @@ contract("Archaeologists", (accounts) => {
 
     describe("allows different keys to register", () => {
       it("with same payment address", async () => {
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, 0)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, 0, { from: wallet2 })
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, 0, { from: wallet2 })
         const count = await sarco.archaeologistCount()
         expect(count.toNumber()).to.equal(2)
       })
 
       it("with different payment address", async () => {
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, 0)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0, { from: wallet2 })
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0, { from: wallet2 })
         const count = await sarco.archaeologistCount()
         expect(count.toNumber()).to.equal(2)
       })
@@ -161,8 +161,8 @@ contract("Archaeologists", (accounts) => {
       })
 
       it("when there are multiple", async () => {
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, 0)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0, { from: wallet2 })
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0, { from: wallet2 })
         const count = await sarco.archaeologistCount()
         expect(count.toNumber()).to.equal(2)
       })
@@ -170,27 +170,27 @@ contract("Archaeologists", (accounts) => {
 
     describe("returns archaeologist address", () => {
       it("spits back the archaeologist addresss given an index", async () => {
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, 0)
         const archLength = await sarco.archaeologistCount()
-        const returnedAddress = await sarco.archaeologistAddresses(archLength.sub(new BN(1)))
+        const returnedAddress = await sarco.archaeologistAddresses(archLength.sub(toBN(1)))
         expect(returnedAddress).is.equal(wallet)
       })
     })
 
     describe("returns data of a registered archaeologist", () => {
-      const minBounty = new BN(1)
-      const minDiggingFee = new BN(2)
-      const maxResurrectionTime = new BN(3)
-      const bond = new BN(4)
+      const minBounty = toBN(1)
+      const minDiggingFee = toBN(2)
+      const maxResurrectionTime = toBN(3)
+      const bond = toBN(4)
       const paymentAddress = wallet2
 
       let archLength, addressFromContract, arch
 
       beforeEach(async () => {
         await token.approve(sarco.address, bond)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", paymentAddress, 0, minBounty, minDiggingFee, maxResurrectionTime, bond)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", paymentAddress, 0, minBounty, minDiggingFee, maxResurrectionTime, bond)
         archLength = await sarco.archaeologistCount()
-        addressFromContract = await sarco.archaeologistAddresses(archLength.sub(new BN(1)))
+        addressFromContract = await sarco.archaeologistAddresses(archLength.sub(toBN(1)))
         arch = await sarco.archaeologists(addressFromContract)
       })
 
@@ -203,19 +203,19 @@ contract("Archaeologists", (accounts) => {
       })
 
       it("returns the correct minimum bounty", () => {
-        expect((new BN(arch.minimumBounty)).eq(minBounty)).to.be.true
+        expect((toBN(arch.minimumBounty)).eq(minBounty)).to.be.true
       })
 
       it("returns the correct minimum digging fee", () => {
-        expect((new BN(arch.minimumDiggingFee)).eq(minDiggingFee)).to.be.true
+        expect((toBN(arch.minimumDiggingFee)).eq(minDiggingFee)).to.be.true
       })
 
       it("returns the correct maximum resurrection time", () => {
-        expect((new BN(arch.maximumResurrectionTime)).eq(maxResurrectionTime)).to.be.true
+        expect((toBN(arch.maximumResurrectionTime)).eq(maxResurrectionTime)).to.be.true
       })
 
       it("returns the correct bond", () => {
-        expect((new BN(arch.freeBond)).eq(bond)).to.be.true
+        expect((toBN(arch.freeBond)).eq(bond)).to.be.true
       })
     })
 
@@ -227,9 +227,9 @@ contract("Archaeologists", (accounts) => {
 
       it("adds to the balance when an archaeologist registers", async () => {
         const ogBalance = await token.balanceOf(sarco.address)
-        const bond = new BN(1)
+        const bond = toBN(1)
         await token.approve(sarco.address, bond)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, bond)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, bond)
         const newBalance = await token.balanceOf(sarco.address)
         expect(newBalance.toNumber()).to.equal(ogBalance.add(bond).toNumber())
       })
@@ -240,9 +240,9 @@ contract("Archaeologists", (accounts) => {
         const bond2 = 2
         await token.transfer(wallet2, 2)
         await token.approve(sarco.address, bond1)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, bond1)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, bond1)
         await token.approve(sarco.address, bond2, { from: wallet2 })
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet2, 0, 0, 0, 0, bond2, { from: wallet2 })
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet2, 0, 0, 0, 0, bond2, { from: wallet2 })
         const newBalance = await token.balanceOf(sarco.address)
         expect(newBalance.sub(ogBalance).toNumber()).to.equal(bond1 + bond2)
       })
@@ -253,7 +253,7 @@ contract("Archaeologists", (accounts) => {
     describe("doesn't work if the archaeologist is not registered", () => {
       it("cannot update archaeologist", async () => {
         await truffleAssert.reverts(
-          sarco.updateArchaeologist.call("https://test.com/post", generatePublicKey(), wallet, 0, 0, 0, 0, 0),
+          sarco.updateArchaeologist.call("https://test.com/post", generateKeys().public, wallet, 0, 0, 0, 0, 0),
           "archaeologist has not been registered yet"
         )
       })
@@ -269,14 +269,14 @@ contract("Archaeologists", (accounts) => {
     describe("does work if the archaeologist is registered", () => {
       beforeEach(async () => {
         await token.approve(sarco.address, 1)
-        await sarco.registerArchaeologist(generatePublicKey(), "https://test.com/post", wallet, 0, 0, 0, 0, 1)
+        await sarco.registerArchaeologist(generateKeys().public, "https://test.com/post", wallet, 0, 0, 0, 0, 1)
       })
 
       describe("updates the payment address", () => {
         it("allows a new payment address to be set", async () => {
           const ogArch = await sarco.archaeologists(wallet)
           expect(ogArch.paymentAddress).to.equal(wallet)
-          const publicKey = generatePublicKey()
+          const publicKey = generateKeys().public
           const result = await sarco.updateArchaeologist.call("https://test.com/post", publicKey, wallet2, 0, 0, 0, 0, 0)
           expect(result).to.be.true
           await sarco.updateArchaeologist("https://test.com/post", publicKey, wallet2, 0, 0, 0, 0, 0)
@@ -288,53 +288,53 @@ contract("Archaeologists", (accounts) => {
       describe("updates the minimum bounty", () => {
         it("allows the minimum bounty to be updated", async () => {
           const ogArch = await sarco.archaeologists(wallet)
-          expect((new BN(ogArch.minimumBounty)).eq(new BN(0))).to.be.true
-          const publicKey = generatePublicKey()
+          expect((toBN(ogArch.minimumBounty)).eq(toBN(0))).to.be.true
+          const publicKey = generateKeys().public
           const result = await sarco.updateArchaeologist.call("https://test.com/post", publicKey, wallet, 0, 1, 0, 0, 0)
           expect(result).to.be.true
           await sarco.updateArchaeologist("https://test.com/post", publicKey, wallet, 0, 1, 0, 0, 0)
           const arch = await sarco.archaeologists(wallet)
-          expect((new BN(arch.minimumBounty)).eq(new BN(1))).to.be.true
+          expect((toBN(arch.minimumBounty)).eq(toBN(1))).to.be.true
         })
       })
 
       describe("updates the minimum digging fee", () => {
         it("allows the minimum digging fee to be updated", async () => {
           const ogArch = await sarco.archaeologists(wallet)
-          expect((new BN(ogArch.minimumDiggingFee)).eq(new BN(0))).to.be.true
-          const publicKey = generatePublicKey()
+          expect((toBN(ogArch.minimumDiggingFee)).eq(toBN(0))).to.be.true
+          const publicKey = generateKeys().public
           const result = await sarco.updateArchaeologist.call("https://test.com/post", publicKey, wallet, 0, 0, 1, 0, 0)
           expect(result).to.be.true
           await sarco.updateArchaeologist("https://test.com/post", publicKey, wallet, 0, 0, 1, 0, 0)
           const arch = await sarco.archaeologists(wallet)
-          expect((new BN(arch.minimumDiggingFee)).eq(new BN(1))).to.be.true
+          expect((toBN(arch.minimumDiggingFee)).eq(toBN(1))).to.be.true
         })
       })
 
       describe("updates the maximum resurrection time", () => {
         it("allows the maximum resurrection time to be updated", async () => {
           const ogArch = await sarco.archaeologists(wallet)
-          expect((new BN(ogArch.maximumResurrectionTime)).eq(new BN(0))).to.be.true
-          const publicKey = generatePublicKey()
+          expect((toBN(ogArch.maximumResurrectionTime)).eq(toBN(0))).to.be.true
+          const publicKey = generateKeys().public
           const result = await sarco.updateArchaeologist.call("https://test.com/post", publicKey, wallet, 0, 0, 0, 1, 0)
           expect(result).to.be.true
           await sarco.updateArchaeologist("https://test.com/post", publicKey, wallet, 0, 0, 0, 1, 0)
           const arch = await sarco.archaeologists(wallet)
-          expect((new BN(arch.maximumResurrectionTime)).eq(new BN(1))).to.be.true
+          expect((toBN(arch.maximumResurrectionTime)).eq(toBN(1))).to.be.true
         })
       })
 
       describe("adds more free bond", () => {
         it("allows the user to add more free bond", async () => {
           const ogArch = await sarco.archaeologists(wallet)
-          expect((new BN(ogArch.freeBond)).eq(new BN(1))).to.be.true
+          expect((toBN(ogArch.freeBond)).eq(toBN(1))).to.be.true
           await token.approve(sarco.address, 3)
-          const publicKey = generatePublicKey()
+          const publicKey = generateKeys().public
           const result = await sarco.updateArchaeologist.call("https://test.com/post", publicKey, wallet, 0, 0, 0, 0, 2)
           expect(result).to.be.true
           await sarco.updateArchaeologist("https://test.com/post", publicKey, wallet, 0, 0, 0, 0, 2)
           const arch = await sarco.archaeologists(wallet)
-          expect((new BN(arch.freeBond)).eq(new BN(3))).to.be.true
+          expect((toBN(arch.freeBond)).eq(toBN(3))).to.be.true
         })
 
         it("does not allow an integer overflow", async () => {
@@ -345,7 +345,7 @@ contract("Archaeologists", (accounts) => {
           const balance = await token.balanceOf(sarco.address)
           expect(balance.toNumber()).to.equal(1)
           await token.approve(sarco.address, 3)
-          await sarco.updateArchaeologist("https://test.com/post", generatePublicKey(), wallet, 0, 0, 0, 0, 2)
+          await sarco.updateArchaeologist("https://test.com/post", generateKeys().public, wallet, 0, 0, 0, 0, 2)
           const newBalance = await token.balanceOf(sarco.address)
           expect(newBalance.toNumber()).to.equal(3)
         })
@@ -365,18 +365,18 @@ contract("Archaeologists", (accounts) => {
             expect(result).to.be.true
             await sarco.withdrawBond(1)
             const arch = await sarco.archaeologists(wallet)
-            expect((new BN(arch.freeBond)).eq(new BN(0))).to.be.true
+            expect((toBN(arch.freeBond)).eq(toBN(0))).to.be.true
           })
 
           it("allows a withdrawal of less than full free bond amount", async () => {
             await token.approve(sarco.address, 3)
-            const publicKey = generatePublicKey()
+            const publicKey = generateKeys().public
             const result = await sarco.updateArchaeologist.call("https://test.com/post", publicKey, wallet, 0, 0, 0, 0, 2)
             expect(result).to.be.true
             await sarco.updateArchaeologist("https://test.com/post", publicKey, wallet, 0, 0, 0, 0, 2)
             await sarco.withdrawBond(1)
             const arch = await sarco.archaeologists(wallet)
-            expect((new BN(arch.freeBond)).eq(new BN(2))).to.be.true
+            expect((toBN(arch.freeBond)).eq(toBN(2))).to.be.true
           })
         })
 

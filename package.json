@@ -25,9 +25,11 @@
   "dependencies": {
     "@truffle/hdwallet-provider": "^1.2.1",
     "dotenv": "^8.2.0",
+    "ethereumjs-util": "^7.0.8",
     "ethereumjs-wallet": "^1.0.1",
     "solidity-coverage": "^0.7.14",
     "truffle": "^5.1.49",
-    "truffle-assertions": "^0.9.2"
+    "truffle-assertions": "^0.9.2",
+    "truffle-test-helpers": "^0.2.2"
   }
 }
