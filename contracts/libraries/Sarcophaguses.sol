@@ -140,14 +140,6 @@ library Sarcophaguses {
             arch.minimumBounty
         );
 
-        // transfer digging fee + bounty + storage fee from embalmer to this
-        // contract
-        sarcoToken.transferFrom(
-            msg.sender,
-            address(this),
-            diggingFee + bounty + storageFee
-        );
-
         // calculate the amount of archaeologist's bond to lock up
         uint256 cursedBondAmount =
             Archaeologists.getCursedBond(diggingFee, bounty);
@@ -184,6 +176,14 @@ library Sarcophaguses {
         data.embalmerSarcophaguses[msg.sender].push(identifier);
         data.archaeologistSarcophaguses[archaeologist].push(identifier);
         data.recipientSarcophaguses[recipientAddress].push(identifier);
+
+        // transfer digging fee + bounty + storage fee from embalmer to this
+        // contract
+        sarcoToken.transferFrom(
+            msg.sender,
+            address(this),
+            diggingFee + bounty + storageFee
+        );
 
         // emit event with all the data
         emit Events.CreateSarcophagus(

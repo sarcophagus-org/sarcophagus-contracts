@@ -188,6 +188,122 @@ contract Sarcophagus {
     }
 
     /**
+     * @notice Returns the count of successful sarcophagi completed by the
+     * archaeologist
+     * @param archaeologist The address of the given archaeologist
+     * @return the number of sarcophagi which have been successfully completed
+     * by the archaeologist
+     */
+    function archaeologistSuccessesCount(address archaeologist)
+        public
+        view
+        returns (uint256)
+    {
+        return _data.archaeologistSuccesses[archaeologist].length;
+    }
+
+    /**
+     * @notice Returns the sarcophagus unique identifier for a given archaeologist
+     * and index of successful sarcophagi
+     * @param archaeologist The address of an archaeologist
+     * @param index The index of the archaeologist's list of successfully
+     * completed sarcophagi
+     * @return the identifier associated with the index of the archaeologist's
+     * successfully completed sarcophagi
+     */
+    function archaeologistSuccessesIdentifier(
+        address archaeologist,
+        uint256 index
+    ) public view returns (bytes32) {
+        return _data.archaeologistSuccesses[archaeologist][index];
+    }
+
+    /**
+     * @notice Returns the count of cancelled sarcophagi from the archaeologist
+     * @param archaeologist The address of the given archaeologist
+     * @return the number of cancelled sarcophagi from the archaeologist
+     */
+    function archaeologistCancelsCount(address archaeologist)
+        public
+        view
+        returns (uint256)
+    {
+        return _data.archaeologistCancels[archaeologist].length;
+    }
+
+    /**
+     * @notice Returns the sarcophagus unique identifier for a given archaeologist
+     * and index of the cancelled sarcophagi
+     * @param archaeologist The address of an archaeologist
+     * @param index The index of the archaeologist's cancelled sarcophagi
+     * @return the identifier associated with the index of the archaeologist's
+     * cancelled sarcophagi
+     */
+    function archaeologistCancelsIdentifier(
+        address archaeologist,
+        uint256 index
+    ) public view returns (bytes32) {
+        return _data.archaeologistCancels[archaeologist][index];
+    }
+
+    /**
+     * @notice Returns the count of accused sarcophagi from the archaeologist
+     * @param archaeologist The address of the given archaeologist
+     * @return the number of accused sarcophagi from the archaeologist
+     */
+    function archaeologistAccusalsCount(address archaeologist)
+        public
+        view
+        returns (uint256)
+    {
+        return _data.archaeologistAccusals[archaeologist].length;
+    }
+
+    /**
+     * @notice Returns the sarcophagus unique identifier for a given
+     * archaeologist and index of the accused sarcophagi
+     * @param archaeologist The address of an archaeologist
+     * @param index The index of the archaeologist's accused sarcophagi
+     * @return the identifier associated with the index of the archaeologist's
+     * accused sarcophagi
+     */
+    function archaeologistAccusalsIdentifier(
+        address archaeologist,
+        uint256 index
+    ) public view returns (bytes32) {
+        return _data.archaeologistAccusals[archaeologist][index];
+    }
+
+    /**
+     * @notice Returns the count of cleaned-up sarcophagi from the
+     * archaeologist
+     * @param archaeologist The address of the given archaeologist
+     * @return the number of cleaned-up sarcophagi from the archaeologist
+     */
+    function archaeologistCleanupsCount(address archaeologist)
+        public
+        view
+        returns (uint256)
+    {
+        return _data.archaeologistCleanups[archaeologist].length;
+    }
+
+    /**
+     * @notice Returns the sarcophagus unique identifier for a given
+     * archaeologist and index of the cleaned-up sarcophagi
+     * @param archaeologist The address of an archaeologist
+     * @param index The index of the archaeologist's accused sarcophagi
+     * @return the identifier associated with the index of the archaeologist's
+     * leaned-up sarcophagi
+     */
+    function archaeologistCleanupsIdentifier(
+        address archaeologist,
+        uint256 index
+    ) public view returns (bytes32) {
+        return _data.archaeologistCleanups[archaeologist][index];
+    }
+
+    /**
      * @notice Returns sarcophagus data given an indentifier
      * @param identifier the unique identifier a sarcophagus
      * @return sarc the Sarcophagus object
