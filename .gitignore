@@ -26,4 +26,6 @@ blockchain/history
 # End of https://www.toptal.com/developers/gitignore/api/soliditytruffle
 
 .vscode
-.openzeppelin
+
+.openzeppelin/*
+!.openzeppelin/goerli.json
