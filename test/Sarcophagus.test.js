@@ -1,3 +1,4 @@
+const { deployProxy, silenceWarnings } = require("@openzeppelin/truffle-upgrades")
 const SarcoTokenMock = artifacts.require("SarcoTokenMock")
 const Sarcophagus = artifacts.require("Sarcophagus")
 const Archaeologists = artifacts.require("Archaeologists")
@@ -25,7 +26,8 @@ beforeEach(async () => {
   await Sarcophagus.link("Archaeologists", archaeologistsLibrary.address)
   await Sarcophagus.link("Sarcophaguses", sarcophagusesLibrary.address)
 
-  _sarco = await Sarcophagus.new(_token.address)
+  silenceWarnings()
+  _sarco = await deployProxy(Sarcophagus, [_token.address], { unsafeAllowLinkedLibraries: true })
 })
 
 const token = () => _token

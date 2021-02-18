@@ -4,10 +4,10 @@
   "description": "Sarcophagus Dead Man's Switch Smart Contracts",
   "main": "index.js",
   "scripts": {
-    "compile": "truffle compile",
+    "compile": "truffle compile --all",
     "develop": "truffle develop",
     "coverage": "truffle run coverage",
-    "test": "truffle test"
+    "test": "npm run compile && truffle test"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "node": "14.15.4"
   },
   "dependencies": {
+    "@openzeppelin/truffle-upgrades": "^1.5.0",
     "@truffle/hdwallet-provider": "^1.2.1",
     "dotenv": "^8.2.0",
     "ethereumjs-util": "^7.0.8",

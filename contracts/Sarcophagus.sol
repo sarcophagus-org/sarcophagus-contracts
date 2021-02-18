@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 import "./openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./libraries/Events.sol";
@@ -24,7 +25,7 @@ import "./libraries/Sarcophaguses.sol";
  * @dev All function calls "proxy" down to functions implemented in one of
  * many libraries
  */
-contract Sarcophagus {
+contract Sarcophagus is Initializable {
     // keep a reference to the SARCO token, which is used for payments
     // throughout the system
     IERC20 public sarcoToken;
@@ -34,10 +35,10 @@ contract Sarcophagus {
     Datas.Data private _data;
 
     /**
-     * @notice Contract constructor
+     * @notice Contract initializer
      * @param _sarcoToken The address of the SARCO token
      */
-    constructor(address _sarcoToken) {
+    function initialize(address _sarcoToken) public initializer {
         sarcoToken = IERC20(_sarcoToken);
         emit Events.Creation(_sarcoToken);
     }
@@ -46,7 +47,7 @@ contract Sarcophagus {
      * @notice Return the number of archaeologists that have been registered
      * @return total registered archaeologist count
      */
-    function archaeologistCount() public view returns (uint256) {
+    function archaeologistCount() public view virtual returns (uint256) {
         return _data.archaeologistAddresses.length;
     }
 
@@ -59,6 +60,7 @@ contract Sarcophagus {
     function archaeologistAddresses(uint256 index)
         public
         view
+        virtual
         returns (address)
     {
         return _data.archaeologistAddresses[index];
@@ -73,6 +75,7 @@ contract Sarcophagus {
     function archaeologists(address account)
         public
         view
+        virtual
         returns (Types.Archaeologist memory)
     {
         return _data.archaeologists[account];
@@ -82,7 +85,7 @@ contract Sarcophagus {
      * @notice Return the total number of sarcophagi that have been created
      * @return the number of sarcophagi that have ever been created
      */
-    function sarcophagusCount() public view returns (uint256) {
+    function sarcophagusCount() public view virtual returns (uint256) {
         return _data.sarcophagusIdentifiers.length;
     }
 
@@ -94,6 +97,7 @@ contract Sarcophagus {
     function sarcophagusIdentifier(uint256 index)
         public
         view
+        virtual
         returns (bytes32)
     {
         return _data.sarcophagusIdentifiers[index];
@@ -107,6 +111,7 @@ contract Sarcophagus {
     function embalmerSarcophagusCount(address embalmer)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.embalmerSarcophaguses[embalmer].length;
@@ -123,6 +128,7 @@ contract Sarcophagus {
     function embalmerSarcophagusIdentifier(address embalmer, uint256 index)
         public
         view
+        virtual
         returns (bytes32)
     {
         return _data.embalmerSarcophaguses[embalmer][index];
@@ -138,6 +144,7 @@ contract Sarcophagus {
     function archaeologistSarcophagusCount(address archaeologist)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.embalmerSarcophaguses[archaeologist].length;
@@ -154,7 +161,7 @@ contract Sarcophagus {
     function archaeologistSarcophagusIdentifier(
         address archaeologist,
         uint256 index
-    ) public view returns (bytes32) {
+    ) public view virtual returns (bytes32) {
         return _data.archaeologistSarcophaguses[archaeologist][index];
     }
 
@@ -166,6 +173,7 @@ contract Sarcophagus {
     function recipientSarcophagusCount(address recipient)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.recipientSarcophaguses[recipient].length;
@@ -182,6 +190,7 @@ contract Sarcophagus {
     function recipientSarcophagusIdentifier(address recipient, uint256 index)
         public
         view
+        virtual
         returns (bytes32)
     {
         return _data.recipientSarcophaguses[recipient][index];
@@ -197,6 +206,7 @@ contract Sarcophagus {
     function archaeologistSuccessesCount(address archaeologist)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.archaeologistSuccesses[archaeologist].length;
@@ -226,6 +236,7 @@ contract Sarcophagus {
     function archaeologistCancelsCount(address archaeologist)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.archaeologistCancels[archaeologist].length;
@@ -242,7 +253,7 @@ contract Sarcophagus {
     function archaeologistCancelsIdentifier(
         address archaeologist,
         uint256 index
-    ) public view returns (bytes32) {
+    ) public view virtual returns (bytes32) {
         return _data.archaeologistCancels[archaeologist][index];
     }
 
@@ -254,6 +265,7 @@ contract Sarcophagus {
     function archaeologistAccusalsCount(address archaeologist)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.archaeologistAccusals[archaeologist].length;
@@ -270,7 +282,7 @@ contract Sarcophagus {
     function archaeologistAccusalsIdentifier(
         address archaeologist,
         uint256 index
-    ) public view returns (bytes32) {
+    ) public view virtual returns (bytes32) {
         return _data.archaeologistAccusals[archaeologist][index];
     }
 
@@ -283,6 +295,7 @@ contract Sarcophagus {
     function archaeologistCleanupsCount(address archaeologist)
         public
         view
+        virtual
         returns (uint256)
     {
         return _data.archaeologistCleanups[archaeologist].length;
@@ -299,7 +312,7 @@ contract Sarcophagus {
     function archaeologistCleanupsIdentifier(
         address archaeologist,
         uint256 index
-    ) public view returns (bytes32) {
+    ) public view virtual returns (bytes32) {
         return _data.archaeologistCleanups[archaeologist][index];
     }
 
@@ -311,6 +324,7 @@ contract Sarcophagus {
     function sarcophagus(bytes32 identifier)
         public
         view
+        virtual
         returns (Types.Sarcophagus memory)
     {
         return _data.sarcophaguses[identifier];
@@ -345,7 +359,7 @@ contract Sarcophagus {
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
         uint256 freeBond
-    ) public returns (uint256) {
+    ) public virtual returns (uint256) {
         return
             Archaeologists.registerArchaeologist(
                 _data,
@@ -390,7 +404,7 @@ contract Sarcophagus {
         uint256 minimumDiggingFee,
         uint256 maximumResurrectionTime,
         uint256 freeBond
-    ) public returns (bool) {
+    ) public virtual returns (bool) {
         return
             Archaeologists.updateArchaeologist(
                 _data,
@@ -412,7 +426,7 @@ contract Sarcophagus {
      * withdrawing
      * @return bool indicating that the withdrawal was successful
      */
-    function withdrawBond(uint256 amount) public returns (bool) {
+    function withdrawBond(uint256 amount) public virtual returns (bool) {
         return Archaeologists.withdrawBond(_data, amount, sarcoToken);
     }
 
@@ -442,7 +456,7 @@ contract Sarcophagus {
         uint256 bounty,
         bytes32 identifier,
         bytes memory recipientPublicKey
-    ) public returns (uint256) {
+    ) public virtual returns (uint256) {
         return
             Sarcophaguses.createSarcophagus(
                 _data,
@@ -477,7 +491,7 @@ contract Sarcophagus {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) public returns (bool) {
+    ) public virtual returns (bool) {
         return
             Sarcophaguses.updateSarcophagus(
                 _data,
@@ -497,7 +511,11 @@ contract Sarcophagus {
      * @param identifier the identifier of the sarcophagus
      * @return bool indicating that the cancel was successful
      */
-    function cancelSarcophagus(bytes32 identifier) public returns (bool) {
+    function cancelSarcophagus(bytes32 identifier)
+        public
+        virtual
+        returns (bool)
+    {
         return Sarcophaguses.cancelSarcophagus(_data, identifier, sarcoToken);
     }
 
@@ -516,7 +534,7 @@ contract Sarcophagus {
         uint256 resurrectionTime,
         uint256 diggingFee,
         uint256 bounty
-    ) public returns (bool) {
+    ) public virtual returns (bool) {
         return
             Sarcophaguses.rewrapSarcophagus(
                 _data,
@@ -538,6 +556,7 @@ contract Sarcophagus {
      */
     function unwrapSarcophagus(bytes32 identifier, bytes32 privateKey)
         public
+        virtual
         returns (bool)
     {
         return
@@ -562,7 +581,7 @@ contract Sarcophagus {
         bytes32 identifier,
         bytes memory singleHash,
         address paymentAddress
-    ) public returns (bool) {
+    ) public virtual returns (bool) {
         return
             Sarcophaguses.accuseArchaeologist(
                 _data,
@@ -580,7 +599,7 @@ contract Sarcophagus {
      * @param identifier the identifier of the sarcophagus
      * @return bool indicating that the bury was successful
      */
-    function burySarcophagus(bytes32 identifier) public returns (bool) {
+    function burySarcophagus(bytes32 identifier) public virtual returns (bool) {
         return Sarcophaguses.burySarcophagus(_data, identifier, sarcoToken);
     }
 
@@ -594,6 +613,7 @@ contract Sarcophagus {
      */
     function cleanUpSarcophagus(bytes32 identifier, address paymentAddress)
         public
+        virtual
         returns (bool)
     {
         return
