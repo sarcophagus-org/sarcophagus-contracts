@@ -1,4 +1,16 @@
 {
+  "1": {
+    "Migrations": "",
+    "Utils": "",
+    "Archaeologists": "",
+    "PrivateKeys": "",
+    "Sarcophaguses": "",
+
+    "SarcophagusProxy": "",
+    "Sarcophagus": "",
+
+    "ProxyAdmin": "0x470260F12967C838CF32fE0d18d919d09fAC57dc"
+  },
   "4": {
     "Migrations": "0xC0e97C405d6Fd9A378BC5D4d6Ae75C8BF49Ed4D7",
     "Utils": "0x45200d9ddb24121Bffc872a3Ad47b1C478B22fCa",

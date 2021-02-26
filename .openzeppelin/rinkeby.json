@@ -1,0 +1,249 @@
+{
+  "manifestVersion": "3.1",
+  "impls": {
+    "a08c9fa24ee3fbcbd7a5c35a6914215f06593b70e6c2e2ae01e30c88e4781dc9": {
+      "address": "0x7484e1dE9782f210a678010d39F212dCff31717f",
+      "txHash": "0x643ddc1d931eefeb211653e7362d16ef1a32c7c34a3eb201fa5b78374875974b",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "openzeppelin/contracts-upgradeable/proxy/Initializable.sol:25"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "openzeppelin/contracts-upgradeable/proxy/Initializable.sol:30"
+          },
+          {
+            "contract": "Sarcophagus",
+            "label": "sarcoToken",
+            "type": "t_contract(IERC20)3994",
+            "src": "Sarcophagus.sol:31"
+          },
+          {
+            "contract": "Sarcophagus",
+            "label": "_data",
+            "type": "t_struct(Data)1281_storage",
+            "src": "Sarcophagus.sol:35"
+          }
+        ],
+        "types": {
+          "t_contract(IERC20)3994": {
+            "label": "contract IERC20"
+          },
+          "t_struct(Data)1281_storage": {
+            "label": "struct Datas.Data",
+            "members": [
+              {
+                "label": "archaeologistAddresses",
+                "type": "t_array(t_address)dyn_storage"
+              },
+              {
+                "label": "archaeologists",
+                "type": "t_mapping(t_address,t_struct(Archaeologist)2772_storage)"
+              },
+              {
+                "label": "archaeologistSuccesses",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              },
+              {
+                "label": "archaeologistCancels",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              },
+              {
+                "label": "archaeologistAccusals",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              },
+              {
+                "label": "archaeologistCleanups",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              },
+              {
+                "label": "archaeologistUsedKeys",
+                "type": "t_mapping(t_bytes_memory_ptr,t_bool)"
+              },
+              {
+                "label": "sarcophagusIdentifiers",
+                "type": "t_array(t_bytes32)dyn_storage"
+              },
+              {
+                "label": "sarcophaguses",
+                "type": "t_mapping(t_bytes32,t_struct(Sarcophagus)2806_storage)"
+              },
+              {
+                "label": "embalmerSarcophaguses",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              },
+              {
+                "label": "archaeologistSarcophaguses",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              },
+              {
+                "label": "recipientSarcophaguses",
+                "type": "t_mapping(t_address,t_array(t_bytes32)dyn_storage)"
+              }
+            ]
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_mapping(t_address,t_struct(Archaeologist)2772_storage)": {
+            "label": "mapping(address => struct Types.Archaeologist)"
+          },
+          "t_struct(Archaeologist)2772_storage": {
+            "label": "struct Types.Archaeologist",
+            "members": [
+              {
+                "label": "exists",
+                "type": "t_bool"
+              },
+              {
+                "label": "currentPublicKey",
+                "type": "t_bytes_storage"
+              },
+              {
+                "label": "endpoint",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "paymentAddress",
+                "type": "t_address"
+              },
+              {
+                "label": "feePerByte",
+                "type": "t_uint256"
+              },
+              {
+                "label": "minimumBounty",
+                "type": "t_uint256"
+              },
+              {
+                "label": "minimumDiggingFee",
+                "type": "t_uint256"
+              },
+              {
+                "label": "maximumResurrectionTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "freeBond",
+                "type": "t_uint256"
+              },
+              {
+                "label": "cursedBond",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_array(t_bytes32)dyn_storage)": {
+            "label": "mapping(address => bytes32[])"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "label": "bytes32[]"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_mapping(t_bytes_memory_ptr,t_bool)": {
+            "label": "mapping(bytes => bool)"
+          },
+          "t_bytes_storage": {
+            "label": "bytes"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_bytes32,t_struct(Sarcophagus)2806_storage)": {
+            "label": "mapping(bytes32 => struct Types.Sarcophagus)"
+          },
+          "t_struct(Sarcophagus)2806_storage": {
+            "label": "struct Types.Sarcophagus",
+            "members": [
+              {
+                "label": "state",
+                "type": "t_enum(SarcophagusStates)2776"
+              },
+              {
+                "label": "archaeologist",
+                "type": "t_address"
+              },
+              {
+                "label": "archaeologistPublicKey",
+                "type": "t_bytes_storage"
+              },
+              {
+                "label": "embalmer",
+                "type": "t_address"
+              },
+              {
+                "label": "name",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "resurrectionTime",
+                "type": "t_uint256"
+              },
+              {
+                "label": "resurrectionWindow",
+                "type": "t_uint256"
+              },
+              {
+                "label": "assetId",
+                "type": "t_string_storage"
+              },
+              {
+                "label": "recipientPublicKey",
+                "type": "t_bytes_storage"
+              },
+              {
+                "label": "storageFee",
+                "type": "t_uint256"
+              },
+              {
+                "label": "diggingFee",
+                "type": "t_uint256"
+              },
+              {
+                "label": "bounty",
+                "type": "t_uint256"
+              },
+              {
+                "label": "currentCursedBond",
+                "type": "t_uint256"
+              },
+              {
+                "label": "privateKey",
+                "type": "t_bytes32"
+              }
+            ]
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_enum(SarcophagusStates)2776": {
+            "label": "enum Types.SarcophagusStates",
+            "members": [
+              "DoesNotExist",
+              "Exists",
+              "Done"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "admin": {
+    "address": "0x5E4c3eF39e2E1335cE3F1B24e48A2E0E433Bd09e",
+    "txHash": "0x498fdeba6e3cb916b8bcf59487180b3e0a6982ace73e1b21bd3b8cf3a9e3c2dd"
+  }
+}

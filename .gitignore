@@ -29,3 +29,5 @@ blockchain/history
 
 .openzeppelin/*
 !.openzeppelin/goerli.json
+!.openzeppelin/rinkeby.json
+!.openzeppelin/mainnet.json
