@@ -8,6 +8,8 @@ module.exports = async function (deployer, network) {
     await deployer.deploy(SarcoTokenMock)
     const sarcoTokenMock = await SarcoTokenMock.deployed()
     sarcoTokenAddress = sarcoTokenMock.address
+  } else if (["rinkeby", "rinkeby-fork"].includes(network)) {
+    sarcoTokenAddress = "0x77Ec161f6C2F2ce4554695A07e071d3f0eF3aef5"
   } else if (["goerli", "goerli-fork"].includes(network)) {
     sarcoTokenAddress = "0x4633b43990b41B57b3678c6F3Ac35bA75C3D8436"
   } else if (["mainnet", "mainnet-fork"].includes(network)) {
