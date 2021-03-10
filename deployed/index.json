@@ -18,8 +18,10 @@
     "PrivateKeys": "0xf3BD5f3549BA64636dc1848459459b9A3FBe78f7",
     "Sarcophaguses": "0x3D7A2C9fC5BD96cD8C36A1299E07e7993DB3D382",
 
-    "SarcophagusProxy": "0xf8f7D52eFa7216f131fA31054221508B4c7ab37d",
-    "Sarcophagus": "0x7484e1dE9782f210a678010d39F212dCff31717f",
+    "Sarcophagus": {
+      "proxy": "0xf8f7D52eFa7216f131fA31054221508B4c7ab37d",
+      "implementation": "0xF974Acd52B4e3adE71cb36A1A9f19963ab623Cf2"
+    },
 
     "ProxyAdmin": "0x5E4c3eF39e2E1335cE3F1B24e48A2E0E433Bd09e"
   },
@@ -30,8 +32,10 @@
     "PrivateKeys": "0x7F9e3E5ECd3c5785d38AD3E6C8cE6c22db469785",
     "Sarcophaguses": "0xb0431f47C163A855D89C2CB71066eB381347eCa2",
 
-    "SarcophagusProxy": "0x72a52B707A94039D9Ab509386B93757c34d39599",
-    "Sarcophagus": "0xf03bc193543f7527478558B34748DB70c141938C",
+    "Sarcophagus": {
+      "proxy": "0x72a52B707A94039D9Ab509386B93757c34d39599",
+      "implementation": "0xbbe8cD7ddDB69e82707DF631ca8F4Bf38fc29c6E"
+    },
 
     "ProxyAdmin": "0x5700B617A826E3F74Ee208F230Aa33b8670a1DB4"
   }

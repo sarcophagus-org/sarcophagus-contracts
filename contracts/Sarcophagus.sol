@@ -147,7 +147,7 @@ contract Sarcophagus is Initializable {
         virtual
         returns (uint256)
     {
-        return _data.embalmerSarcophaguses[archaeologist].length;
+        return _data.archaeologistSarcophaguses[archaeologist].length;
     }
 
     /**
