@@ -1,3 +1,5 @@
+const { deployProxy } = require("@openzeppelin/truffle-upgrades")
+
 const Utils = artifacts.require("Utils")
 const PrivateKeys = artifacts.require("PrivateKeys")
 const Archaeologists = artifacts.require("Archaeologists")
@@ -5,17 +7,17 @@ const Sarcophaguses = artifacts.require("Sarcophaguses")
 const Sarcophagus = artifacts.require("Sarcophagus")
 
 module.exports = async function (deployer) {
-  deployer.deploy(Utils)
+  await deployProxy(Utils, [], { deployer })
 
   deployer.link(Utils, Archaeologists)
-  deployer.deploy(Archaeologists)
+  await deployProxy(Archaeologists, [], { deployer, unsafeAllowLinkedLibraries: true })
 
-  deployer.deploy(PrivateKeys)
+  await deployProxy(PrivateKeys, [], { deployer })
 
   deployer.link(Utils, Sarcophaguses)
   deployer.link(Archaeologists, Sarcophaguses)
   deployer.link(PrivateKeys, Sarcophaguses)
-  deployer.deploy(Sarcophaguses)
+  await deployProxy(Sarcophaguses, [], { deployer, unsafeAllowLinkedLibraries: true })
 
   deployer.link(Archaeologists, Sarcophagus)
   deployer.link(Sarcophaguses, Sarcophagus)
