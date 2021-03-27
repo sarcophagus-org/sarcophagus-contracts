@@ -1,59 +1,27 @@
 {
   "manifestVersion": "3.1",
   "impls": {
-    "4ad76395a987df12bc196d762956ecb50dfed2289ee5f7881bc006119964cffe": {
-      "address": "0x2b8710D98F274a22849D8Bb832ed35093da4609C",
-      "txHash": "0xdf09c00e4c89077017eff64bd171e8a7fa15f635cff1701d494eb05035b0d143",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "ba50dce23c8e645e4c58c315afe7527b557b849ad12f86ef77dedebf8ffe68c6": {
-      "address": "0xef7f1CBd0485594BD14d5447Cd1d128266555AE5",
-      "txHash": "0x72e68fb77c41afcfd7a27a062080de37258fcac720205cba4b67a72f9e423731",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "1e635f3346b309df3cd00addaa9ea4a730afb209193c991ac11a91464c510b01": {
-      "address": "0x2ec231966a807e2cc2822Cd1B342c1fD53E875Bd",
-      "txHash": "0x27628de7f69b41ed879a68622a4224d285114b86e409f008a3bc0f3916df52fc",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "64e5c6ae786169d62e1af37d4a6632fefb91ddd2a053560109df3ced339efce1": {
-      "address": "0x27b2E76f19ACb8c48787999DB572FEFd1a75cD56",
-      "txHash": "0xbe0bda3f5364f2e19fc660b6ce42bba121dc9a406e19179ce71b846b4a80eda1",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "f83c4219b7e527d86b163f7d60b447895bfd54f36ad17a2d9fb0d409cdb12c17": {
-      "address": "0xeaf240Ed8FD7374B0c2380762460e0E3eB041647",
-      "txHash": "0xde4f69b816ed7a510f014ea6769cbe5514d82fd9c09d2e6a447aa7c70596ce14",
+    "3af370562c396b0094c521877a5c15e3f7be37f033eb8ed0c823a46607a46e0e": {
+      "address": "0xF974Acd52B4e3adE71cb36A1A9f19963ab623Cf2",
+      "txHash": "0xe16b9d5d4e2523560415b905c265468e30458ee529869c371e6cb31a1a4bceab",
       "layout": {
         "storage": [
           {
             "contract": "Initializable",
             "label": "_initialized",
             "type": "t_bool",
-            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:25"
+            "src": "openzeppelin/contracts-upgradeable/proxy/Initializable.sol:25"
           },
           {
             "contract": "Initializable",
             "label": "_initializing",
             "type": "t_bool",
-            "src": "../@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:30"
+            "src": "openzeppelin/contracts-upgradeable/proxy/Initializable.sol:30"
           },
           {
             "contract": "Sarcophagus",
             "label": "sarcoToken",
-            "type": "t_contract(IERC20)3949",
+            "type": "t_contract(IERC20)3994",
             "src": "Sarcophagus.sol:31"
           },
           {
@@ -64,7 +32,7 @@
           }
         ],
         "types": {
-          "t_contract(IERC20)3949": {
+          "t_contract(IERC20)3994": {
             "label": "contract IERC20"
           },
           "t_struct(Data)1281_storage": {

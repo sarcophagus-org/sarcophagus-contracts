@@ -13,50 +13,30 @@
   },
   "4": {
     "Migrations": "0xC0e97C405d6Fd9A378BC5D4d6Ae75C8BF49Ed4D7",
-    "Utils": {
-      "proxy": "0xfb2f5F7DfEfeBd8b2155aC9b945881bf3830aF72",
-      "implementation": "0x2b8710D98F274a22849D8Bb832ed35093da4609C"
-    },
-    "Archaeologists": {
-      "proxy": "0xC4cb447e39D3a14f6b70F8CAcDb7f42d55950E0f",
-      "implementation": "0xef7f1CBd0485594BD14d5447Cd1d128266555AE5"
-    },
-    "PrivateKeys": {
-      "proxy": "0xa4592289D79ca0c72868d7545822b5127F52f8Dc",
-      "implementation": "0x2ec231966a807e2cc2822Cd1B342c1fD53E875Bd"
-    },
-    "Sarcophaguses": {
-      "proxy": "0x0F09B1178F62cEf5c93708Af57DFeFE0ad43De7B",
-      "implementation": "0x27b2E76f19ACb8c48787999DB572FEFd1a75cD56"
-    },
+    "Utils": "0x45200d9ddb24121Bffc872a3Ad47b1C478B22fCa",
+    "Archaeologists": "0x635C7eEEF29b1F8F1Ae19dA2ca0912B5c44dDCD8",
+    "PrivateKeys": "0xf3BD5f3549BA64636dc1848459459b9A3FBe78f7",
+    "Sarcophaguses": "0x3D7A2C9fC5BD96cD8C36A1299E07e7993DB3D382",
+
     "Sarcophagus": {
       "proxy": "0xf8f7D52eFa7216f131fA31054221508B4c7ab37d",
-      "implementation": "0xeaf240Ed8FD7374B0c2380762460e0E3eB041647"
+      "implementation": "0xF974Acd52B4e3adE71cb36A1A9f19963ab623Cf2"
     },
+
     "ProxyAdmin": "0x5E4c3eF39e2E1335cE3F1B24e48A2E0E433Bd09e"
   },
   "5": {
     "Migrations": "0x41d62B8dEA8Aa76A93B79D1E0dbCEa38bc32bA3E",
-    "Utils": {
-      "proxy": "0x7aEC5Be46f8994bdF205C29833E58fDe26fbac6C",
-      "implementation": "0x7823d3f064ef626C6D4bbA9366f79cdB54E6C082"
-    },
-    "Archaeologists": {
-      "proxy": "0xbA5c922F75BD955424fBf938285986772028E989",
-      "implementation": "0x7D03b19a13D220B3633Bb6292f0C98D3a3e4b085"
-    },
-    "PrivateKeys": {
-      "proxy": "0xD5a7A7A1b210230a3418D3b14C389faD0881EE3d",
-      "implementation": "0x937aA5414fFE8F67348CB9302843e1930263D302"
-    },
-    "Sarcophaguses": {
-      "proxy": "0x17Dd5d380BC839E60ECDC29D64CC2004cbA84E98",
-      "implementation": "0xDa07089436d30052CDFAd6BD8bA272f106AAb742"
-    },
+    "Utils": "0x80038418fc84526784CD8aa307c4201CAcc19bae",
+    "Archaeologists": "0x6ba86aeB704378473a4cE2ad1293035C69F10e8d",
+    "PrivateKeys": "0x7F9e3E5ECd3c5785d38AD3E6C8cE6c22db469785",
+    "Sarcophaguses": "0xb0431f47C163A855D89C2CB71066eB381347eCa2",
+
     "Sarcophagus": {
       "proxy": "0x72a52B707A94039D9Ab509386B93757c34d39599",
-      "implementation": "0x38630aA3b010A7641376942F7Ce4Ca794BF609d9"
+      "implementation": "0xbbe8cD7ddDB69e82707DF631ca8F4Bf38fc29c6E"
     },
+
     "ProxyAdmin": "0x5700B617A826E3F74Ee208F230Aa33b8670a1DB4"
   }
 }
