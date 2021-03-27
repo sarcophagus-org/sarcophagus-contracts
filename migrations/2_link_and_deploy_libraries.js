@@ -4,7 +4,6 @@ const Utils = artifacts.require("Utils")
 const PrivateKeys = artifacts.require("PrivateKeys")
 const Archaeologists = artifacts.require("Archaeologists")
 const Sarcophaguses = artifacts.require("Sarcophaguses")
-const Sarcophagus = artifacts.require("Sarcophagus")
 
 module.exports = async function (deployer) {
   await deployProxy(Utils, [], { deployer })
@@ -18,7 +17,4 @@ module.exports = async function (deployer) {
   deployer.link(Archaeologists, Sarcophaguses)
   deployer.link(PrivateKeys, Sarcophaguses)
   await deployProxy(Sarcophaguses, [], { deployer, unsafeAllowLinkedLibraries: true })
-
-  deployer.link(Archaeologists, Sarcophagus)
-  deployer.link(Sarcophaguses, Sarcophagus)
 }

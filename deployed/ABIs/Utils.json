@@ -10,8 +10,7 @@
     "name": "publicKeyLength",
     "outputs": [],
     "stateMutability": "pure",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -29,8 +28,7 @@
     "name": "hashCheck",
     "outputs": [],
     "stateMutability": "pure",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -43,8 +41,7 @@
     "name": "confirmAssetIdNotSet",
     "outputs": [],
     "stateMutability": "pure",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -62,8 +59,7 @@
     "name": "assetIdsCheck",
     "outputs": [],
     "stateMutability": "pure",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -96,8 +92,7 @@
     "name": "signatureCheck",
     "outputs": [],
     "stateMutability": "pure",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -110,8 +105,7 @@
     "name": "resurrectionInFuture",
     "outputs": [],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -130,8 +124,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -149,8 +142,7 @@
     "name": "unwrapTime",
     "outputs": [],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -163,8 +155,7 @@
     "name": "sarcophagusUpdater",
     "outputs": [],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -202,7 +193,6 @@
     "name": "withinArchaeologistLimits",
     "outputs": [],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   }
 ]
