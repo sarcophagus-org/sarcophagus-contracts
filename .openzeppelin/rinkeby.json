@@ -1,41 +1,9 @@
 {
   "manifestVersion": "3.1",
   "impls": {
-    "4ad76395a987df12bc196d762956ecb50dfed2289ee5f7881bc006119964cffe": {
-      "address": "0xE3F28DDCe075ACA2D68c699aa188ADEF89D5DDE0",
-      "txHash": "0x05f66593235739baa8b78469ea1c1ca08342c4e6cd13348dc9504fc98e893b31",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "0ad711ffdcf53ad660828fd0f56a69a28ed7ee3af64ada57a1109bdd5cbe81bc": {
-      "address": "0x73C4480DC47Fb07785924c740e27Cb8848C38a43",
-      "txHash": "0x0f270c21fc3612d29e92866930b89cd1b38eeecd24bf8eddcdf5db9cf51dde14",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "1e635f3346b309df3cd00addaa9ea4a730afb209193c991ac11a91464c510b01": {
-      "address": "0x480308891f6c3A942b1A27CCdC5040d0718905F7",
-      "txHash": "0xea93a282f52ffefec6b2ecb96b5c8d419c2cd5dd37aee9357e452a8c79826de9",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "52a0afb448df0b87c3b34d3c104fb192999bd2e8b81aa427b89d8836dc7f8b53": {
-      "address": "0x1cEDD82503599ab5A85241924123b8D9c1fbFb62",
-      "txHash": "0x2cc85b7a39c3a73765a196cbae51d02b3410dbba23eeef7546e61f382e7f65ca",
-      "layout": {
-        "storage": [],
-        "types": {}
-      }
-    },
-    "0bdc5c61e00ed2f9678b73aaa5982ea30ffaf44abac2553b691b072609af5cc9": {
-      "address": "0xb236c299dbecf43b2Ff770F78EFD08191E33EFEE",
-      "txHash": "0x32d0b19d1d3368e0d4a2f865481871a317680b74306876d052b98e301edb7d81",
+    "8c047491e11a6c97c624bde3539b800c8789aac743abed8b9967dc1752e3bbeb": {
+      "address": "0x0A6De1e553e7B1Af73Bc4779d37C09DA724848BF",
+      "txHash": "0x402a940f97a09f616ec2176119eea93fd6f43c0402f41ec2ab1058647ae7a51d",
       "layout": {
         "storage": [
           {
