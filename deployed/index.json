@@ -1,14 +1,14 @@
 {
   "1": {
-    "Migrations": "",
-    "Utils": "",
-    "Archaeologists": "",
-    "PrivateKeys": "",
-    "Sarcophaguses": "",
-
-    "SarcophagusProxy": "",
-    "Sarcophagus": "",
-
+    "Migrations": "0x21A50Dc19747818957fd573f26d89952b3099e23",
+    "Utils": "0xAb19Fab827dF6286f3Ef52F38a25b121e1F8687B",
+    "Archaeologists": "0xca7353F0486F7E52813acFd39060683f981fc4eD",
+    "PrivateKeys": "0x538F050753dbDcCfcD68A11E5Dd6B5dD56Ae729b",
+    "Sarcophaguses": "0x621B1710D64E27E143F332c79cE45b92dAF3fEC6",
+    "Sarcophagus": {
+      "proxy": "0xD227e63E7d74Ba0374E1d5B2479666b21ba7811c",
+      "implementation": "0x6d7773494eEAB3Ff6437bcFeC407772771098be8"
+    },
     "ProxyAdmin": "0x470260F12967C838CF32fE0d18d919d09fAC57dc"
   },
   "4": {
