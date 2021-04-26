@@ -1,8 +1,17 @@
-# Sarcophagus Smart Contracts
+# Sarcophagus Core
 
-This repository contains the smart contract code and deployment scripts for the Sarcophagus Token, and the Sarcophagus system smart contract.
+[![Discord](https://img.shields.io/discord/753398645507883099?color=768AD4&label=discord)](https://discord.com/channels/753398645507883099/)
+[![Twitter](https://img.shields.io/twitter/follow/sarcophagusio?style=social)](https://twitter.com/sarcophagusio)
 
-To either do local development, or deploy the contracts, you'll need to set some configuration values.
+Sarcophagus is a decentralized dead man's switch built on Ethereum and Arweave.
+
+## Overview
+
+This repository contains the smart contracts (and corresponding deployment scripts) that power the Sarcophagus system.
+
+## Configuration
+
+To work with the contracts you'll need to set some configuration values:
 
 ```sh
 $ cp .env.example .env
@@ -81,12 +90,21 @@ $ npx truffle migrate --network <yourNewNetwork>
 ## Public Deployments
 
 The contracts are currently deployed on public networks. Please refer to the `deployed` directory for details.
-## Final notes
+## Additional Tips
 
-Any time you make any changes to the smart contracts, don't forget to re-compile before executing any of the above commands
+If you make changes to the contracts, re-compile before executing any of the above commands:
 
 ```sh
 $ npm run compile
 ```
 
-If you've got a local development environment running (via `npm run develop`), you'll want to stop and restart that.
+In addition, If you're running on a local development environment (via `npm run develop`), you'll want to stop and restart it to reflect the changes.
+
+## Community
+
+[![Discord](https://img.shields.io/discord/753398645507883099?color=768AD4&label=discord)](https://discord.com/channels/753398645507883099/)
+[![Twitter](https://img.shields.io/twitter/follow/sarcophagusio?style=social)](https://twitter.com/sarcophagusio)
+
+We can also be found on [Telegram](https://t.me/sarcophagusio).
+
+Made with :skull: and proudly decentralized.
